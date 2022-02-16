@@ -2,17 +2,19 @@ package pl.lotto.numberreceiver;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+@SpringBootTest
+class NumberReceiverFacadeSpringIntegrationTest {
 
-class NumberReceiverFacadeSpec {
-
-    private final NumberReceiverFacade numberReceiverFacade = new NumberReceiverConfiguration()
-            .numberReceiverFacade(new NumberValidatorImpl(), new InMemoryNumberRepository());
+    @Autowired
+    private NumberReceiverFacade numberReceiverFacade;
 
     @Test
     @DisplayName("module should accept when user gave exactly 6 numbers in range")

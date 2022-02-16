@@ -2,6 +2,9 @@ package pl.lotto.resultannouncer;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import pl.lotto.resultchecker.ResultCheckerFacade;
 
 import java.util.HashSet;
@@ -9,13 +12,15 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
-class ResultAnnouncerFacadeSpec {
+@SpringBootTest
+class ResultAnnouncerFacadeSpringIntegrationTest {
 
-    private final ResultCheckerFacade resultCheckerFacade = mock(ResultCheckerFacade.class);
-    private final ResultAnnouncerFacade resultAnnouncerFacade = new ResultAnnouncerConfiguration()
-            .resultAnnouncerFacade(resultCheckerFacade);
+    @MockBean
+    private ResultCheckerFacade resultCheckerFacade;
+
+    @Autowired
+    private ResultAnnouncerFacade resultAnnouncerFacade;
 
     Set<String> winners = new HashSet<>() {{
         add("hash1");

@@ -2,6 +2,9 @@ package pl.lotto.resultchecker;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
 
@@ -16,16 +19,18 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
-class ResultCheckerFacadeSpec {
+@SpringBootTest
+class ResultCheckerFacadeSpringIntegrationTest {
 
-    private final NumberReceiverFacade numberReceiverFacade =
-            mock(NumberReceiverFacade.class);
-    private final LottoNumberGeneratorFacade lottoNumberGeneratorFacade =
-            mock(LottoNumberGeneratorFacade.class);
-    private final ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration()
-            .resultCheckerFacade(new InMemoryWinnersRepository(), numberReceiverFacade, lottoNumberGeneratorFacade);
+    @MockBean
+    private NumberReceiverFacade numberReceiverFacade;
+    @MockBean
+    private LottoNumberGeneratorFacade lottoNumberGeneratorFacade;
+
+    @Autowired
+    private ResultCheckerFacade resultCheckerFacade;
+
     Map<String, Set<Integer>> usersNumbers = new HashMap<>() {{
             put("hash1", Set.of(1, 2, 3, 4, 5, 6));
             put("hash2", Set.of(1, 2, 3, 4, 5, 6));

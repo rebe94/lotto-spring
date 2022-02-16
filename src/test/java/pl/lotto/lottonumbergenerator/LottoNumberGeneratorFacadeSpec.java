@@ -12,7 +12,7 @@ import static pl.lotto.configuration.GameConfiguration.AMOUNT_OF_NUMBERS;
 
 class LottoNumberGeneratorFacadeSpec {
 
-    final LottoNumberGeneratorFacade lottoNumberGeneratorFacade =
+    private final LottoNumberGeneratorFacade lottoNumberGeneratorFacade =
             new LottoNumberGeneratorConfiguration().lottoNumberGeneratorFacade();
 
     @Test
