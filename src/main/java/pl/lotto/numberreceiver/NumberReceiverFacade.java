@@ -1,20 +1,15 @@
 package pl.lotto.numberreceiver;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
-@Service
 public class NumberReceiverFacade {
 
     private final NumberValidator numberValidator;
     private final NumberRepository numberRepository;
 
-    @Autowired
     public NumberReceiverFacade(NumberValidator numbersValidator, NumberRepository numberRepository) {
         this.numberValidator = numbersValidator;
         this.numberRepository = numberRepository;

@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.equalTo;
 class NumberReceiverFacadeSpec {
 
     private final NumberReceiverFacade numberReceiverFacade = new NumberReceiverConfiguration()
-            .numberReceiverFacade(new NumberValidatorImpl(), new InMemoryNumberRepository());
+            .numberReceiverFacadeForTests();
 
     @Test
     @DisplayName("module should accept when user gave exactly 6 numbers in range")

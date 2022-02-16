@@ -1,25 +1,20 @@
 package pl.lotto.resultchecker;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
-import pl.lotto.numberreceiver.NumberReceiverFacade;
-
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
+import pl.lotto.numberreceiver.NumberReceiverFacade;
 
-@Service
 public class ResultCheckerFacade {
 
     private final WinnersRepository winnersRepository;
     private final NumberReceiverFacade numberReceiverFacade;
     private final LottoNumberGeneratorFacade lottoNumberGeneratorFacade;
 
-    @Autowired
     public ResultCheckerFacade(WinnersRepository winnersRepository,
-                                NumberReceiverFacade numberReceiverFacade,
-                                LottoNumberGeneratorFacade lottoNumberGeneratorFacade) {
+                               NumberReceiverFacade numberReceiverFacade,
+                               LottoNumberGeneratorFacade lottoNumberGeneratorFacade) {
         this.winnersRepository = winnersRepository;
         this.numberReceiverFacade = numberReceiverFacade;
         this.lottoNumberGeneratorFacade = lottoNumberGeneratorFacade;

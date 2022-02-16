@@ -1,17 +1,12 @@
 package pl.lotto.resultannouncer;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import java.util.Set;
 import pl.lotto.resultchecker.ResultCheckerFacade;
 
-import java.util.Set;
-
-@Service
 public class ResultAnnouncerFacade {
 
     private final ResultCheckerFacade resultCheckerFacade;
 
-    @Autowired
     public ResultAnnouncerFacade(ResultCheckerFacade resultCheckerFacade) {
         this.resultCheckerFacade = resultCheckerFacade;
     }

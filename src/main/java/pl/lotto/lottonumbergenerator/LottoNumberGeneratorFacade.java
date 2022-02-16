@@ -1,15 +1,11 @@
 package pl.lotto.lottonumbergenerator;
 
-import org.springframework.stereotype.Service;
-
 import java.util.Set;
 import java.util.TreeSet;
-
 import static pl.lotto.configuration.GameConfiguration.AMOUNT_OF_NUMBERS;
 import static pl.lotto.configuration.GameConfiguration.LOWEST_NUMBER;
 import static pl.lotto.configuration.GameConfiguration.RANDOM_NUMBER_BOUND;
 
-@Service
 public class LottoNumberGeneratorFacade {
 
     public Set<Integer> winningNumbers() {

@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
-class ResultAnnouncerFacadeSpringIntegrationTest {
+class ResultAnnouncerFacadeIntegrationSpec {
 
     @MockBean
     private ResultCheckerFacade resultCheckerFacade;
