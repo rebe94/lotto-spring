@@ -25,7 +25,7 @@ class ResultCheckerFacadeSpec {
     private final LottoNumberGeneratorFacade lottoNumberGeneratorFacade =
             mock(LottoNumberGeneratorFacade.class);
     private final ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration()
-            .resultCheckerFacade(new InMemoryWinnersRepository(), numberReceiverFacade, lottoNumberGeneratorFacade);
+            .resultCheckerFacadeForTests(numberReceiverFacade, lottoNumberGeneratorFacade);
     Map<String, Set<Integer>> usersNumbers = new HashMap<>() {{
             put("hash1", Set.of(1, 2, 3, 4, 5, 6));
             put("hash2", Set.of(1, 2, 3, 4, 5, 6));
@@ -42,7 +42,6 @@ class ResultCheckerFacadeSpec {
         Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 6);
         given(lottoNumberGeneratorFacade.winningNumbers())
                 .willReturn(winningNumbers);
-        System.out.println("Po nadpisaniu metody w testach: " + lottoNumberGeneratorFacade.winningNumbers());
 
         // when
         resultCheckerFacade.checkWinners();
@@ -64,7 +63,6 @@ class ResultCheckerFacadeSpec {
         Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 99);
         given(lottoNumberGeneratorFacade.winningNumbers())
                 .willReturn(winningNumbers);
-        System.out.println("Po nadpisaniu metody w testach: " + lottoNumberGeneratorFacade.winningNumbers());
 
         // when
         resultCheckerFacade.checkWinners();

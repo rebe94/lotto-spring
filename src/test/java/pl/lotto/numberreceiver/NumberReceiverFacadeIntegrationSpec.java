@@ -11,7 +11,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 @SpringBootTest
-class NumberReceiverFacadeSpringIntegrationTest {
+class NumberReceiverFacadeIntegrationSpec {
 
     @Autowired
     private NumberReceiverFacade numberReceiverFacade;

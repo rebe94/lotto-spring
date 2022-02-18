@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
-class ResultCheckerFacadeSpringIntegrationTest {
+class ResultCheckerFacadeIntegrationSpec {
 
     @MockBean
     private NumberReceiverFacade numberReceiverFacade;
@@ -29,7 +29,8 @@ class ResultCheckerFacadeSpringIntegrationTest {
     private LottoNumberGeneratorFacade lottoNumberGeneratorFacade;
 
     @Autowired
-    private ResultCheckerFacade resultCheckerFacade;
+    private ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration()
+            .resultCheckerFacadeForTests(numberReceiverFacade, lottoNumberGeneratorFacade);
 
     Map<String, Set<Integer>> usersNumbers = new HashMap<>() {{
             put("hash1", Set.of(1, 2, 3, 4, 5, 6));
@@ -47,7 +48,6 @@ class ResultCheckerFacadeSpringIntegrationTest {
         Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 6);
         given(lottoNumberGeneratorFacade.winningNumbers())
                 .willReturn(winningNumbers);
-        System.out.println("Po nadpisaniu metody w testach: " + lottoNumberGeneratorFacade.winningNumbers());
 
         // when
         resultCheckerFacade.checkWinners();
@@ -69,7 +69,6 @@ class ResultCheckerFacadeSpringIntegrationTest {
         Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 99);
         given(lottoNumberGeneratorFacade.winningNumbers())
                 .willReturn(winningNumbers);
-        System.out.println("Po nadpisaniu metody w testach: " + lottoNumberGeneratorFacade.winningNumbers());
 
         // when
         resultCheckerFacade.checkWinners();

@@ -5,11 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationContext;
 import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
+import pl.lotto.numberreceiver.NumberReceiverConfiguration;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
 import pl.lotto.numberreceiver.ResultMessage;
+import pl.lotto.resultannouncer.ResultAnnouncerConfiguration;
 import pl.lotto.resultannouncer.ResultAnnouncerFacade;
+import pl.lotto.resultchecker.ResultCheckerConfiguration;
+import pl.lotto.resultchecker.ResultCheckerFacade;
 
 import java.util.Set;
 
@@ -22,57 +25,98 @@ import static org.mockito.BDDMockito.given;
 class AppRunnerIntegrationTests {
 
     @MockBean
-    LottoNumberGeneratorFacade lottoNumberGeneratorFacade;
+    private LottoNumberGeneratorFacade lottoNumberGeneratorFacade;
 
     @Autowired
-    private ApplicationContext context;
+    private NumberReceiverFacade numberReceiverFacade = new NumberReceiverConfiguration().numberReceiverFacadeForTests();
+    @Autowired
+    private ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration()
+            .resultCheckerFacadeForTests(numberReceiverFacade, lottoNumberGeneratorFacade);
+    @Autowired
+    private ResultAnnouncerFacade resultAnnouncerFacade = new ResultAnnouncerConfiguration()
+            .resultAnnouncerFacade(resultCheckerFacade);
+
+    /*@Test
+    @DisplayName("User chooses correct numbers and receives acceptance information and hash code." +
+            "Next checks result using hash code and receives win information.")
+    public void user_chooses_correct_numbers_and_receives_acceptance_and_hash_code_then_checks_result_and_receives_win_information() {
+        final Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6);
+        given(lottoNumberGeneratorFacade.winningNumbers()).willReturn(Set.of(1, 2, 3, 4, 5, 6));
+
+        final ResultMessage receivedUserMessage = numberReceiverFacade.inputNumbers(userNumbers);
+        final String GENERATED_HASH = receivedUserMessage.getHash();
+        final String resultUserMessage = resultAnnouncerFacade.checkResult(GENERATED_HASH);
+
+        final ResultMessage numbersAccepted = new ResultMessage("Accepted", GENERATED_HASH);
+
+        assertAll(
+                () -> assertThat(receivedUserMessage, equalTo(numbersAccepted)),
+                () -> assertThat(resultUserMessage, equalTo("Winner"))
+        );
+    }*/
 
     @Test
     @DisplayName("User chooses correct numbers and receives acceptance information and hash code." +
             "Next checks result using hash code and receives win information.")
     public void user_chooses_correct_numbers_and_receives_acceptance_and_hash_code_then_checks_result_and_receives_win_information() {
-        // given
-        NumberReceiverFacade numberReceiverFacade = context.getBean(NumberReceiverFacade.class);
-        ResultAnnouncerFacade resultAnnouncerFacade = context.getBean(ResultAnnouncerFacade.class);
+        final ResultMessage receivedUserMessage = userChoosesNumbers(Set.of(1, 2, 3, 4, 5, 6));
+        String GENERATED_HASH = receivedUserMessage.getHash();
+        generatorDrawsWinningNumbers(Set.of(1, 2, 3, 4, 5, 6));
+        final String checkResultMessage = userCheckResultByHash(GENERATED_HASH);
 
-        final Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6);
+        final ResultMessage numbersAccepted = new ResultMessage("Accepted", GENERATED_HASH);
 
-        given(lottoNumberGeneratorFacade.winningNumbers()).willReturn(Set.of(1, 2, 3, 4, 5, 6));
-        System.out.println("Po nadpisaniu metody w testach: " + lottoNumberGeneratorFacade.winningNumbers());
-        // when
-        final ResultMessage receivedUserMessage = numberReceiverFacade.inputNumbers(userNumbers);
-        final String SOME_HASH = receivedUserMessage.getHash();
-
-        final String resultUserMessage = resultAnnouncerFacade.checkResult(SOME_HASH);
-
-        // then
         assertAll(
-                () -> assertThat(receivedUserMessage, equalTo(new ResultMessage("Accepted", SOME_HASH))),
-                () -> assertThat(resultUserMessage, equalTo("Winner"))
+                () -> assertThat(receivedUserMessage, equalTo(numbersAccepted)),
+                () -> assertThat(checkResultMessage, equalTo("Winner"))
         );
     }
+
+    /*@Test
+    @DisplayName("User chooses correct numbers and receives acceptance information and hash code." +
+            "Next checks result using hash code and receives lose information.")
+    public void user_chooses_correct_numbers_and_receives_acceptance_and_hash_code_then_checks_result_and_receives_lose_information() {
+        final Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6);
+        given(lottoNumberGeneratorFacade.winningNumbers()).willReturn(Set.of(1, 2, 3, 4, 5, 15));
+
+        final ResultMessage receivedUserMessage = numberReceiverFacade.inputNumbers(userNumbers);
+        final String GENERATED_HASH = receivedUserMessage.getHash();
+        final String checkResultMessage = resultAnnouncerFacade.checkResult(GENERATED_HASH);
+
+        final ResultMessage numbersAccepted = new ResultMessage("Accepted", GENERATED_HASH);
+
+        assertAll(
+                () -> assertThat(receivedUserMessage, equalTo(numbersAccepted)),
+                () -> assertThat(checkResultMessage, equalTo("Loser"))
+        );
+    }*/
 
     @Test
     @DisplayName("User chooses correct numbers and receives acceptance information and hash code." +
             "Next checks result using hash code and receives lose information.")
     public void user_chooses_correct_numbers_and_receives_acceptance_and_hash_code_then_checks_result_and_receives_lose_information() {
-        // given
-        NumberReceiverFacade numberReceiverFacade = context.getBean(NumberReceiverFacade.class);
-        ResultAnnouncerFacade resultAnnouncerFacade = context.getBean(ResultAnnouncerFacade.class);
+        final ResultMessage receivedUserMessage = userChoosesNumbers(Set.of(1, 2, 3, 4, 5, 6));
+        String GENERATED_HASH = receivedUserMessage.getHash();
+        generatorDrawsWinningNumbers(Set.of(1, 2, 3, 4, 5, 15));
+        final String checkResultMessage = userCheckResultByHash(GENERATED_HASH);
 
-        final Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6);
-        given(lottoNumberGeneratorFacade.winningNumbers()).willReturn(Set.of(1, 2, 3, 4, 5, 15));
-        System.out.println("Po nadpisaniu metody w testach: " + lottoNumberGeneratorFacade.winningNumbers());
-        // when
-        final ResultMessage receivedUserMessage = numberReceiverFacade.inputNumbers(userNumbers);
-        final String SOME_HASH = receivedUserMessage.getHash();
+        final ResultMessage numbersAccepted = new ResultMessage("Accepted", GENERATED_HASH);
 
-        final String resultUserMessage = resultAnnouncerFacade.checkResult(SOME_HASH);
-
-        // then
         assertAll(
-                () -> assertThat(receivedUserMessage, equalTo(new ResultMessage("Accepted", SOME_HASH))),
-                () -> assertThat(resultUserMessage, equalTo("Loser"))
+                () -> assertThat(receivedUserMessage, equalTo(numbersAccepted)),
+                () -> assertThat(checkResultMessage, equalTo("Loser"))
         );
+    }
+
+    private ResultMessage userChoosesNumbers(Set<Integer> numbers) {
+        return numberReceiverFacade.inputNumbers(numbers);
+    }
+
+    private void generatorDrawsWinningNumbers(Set<Integer> numbers) {
+        given(lottoNumberGeneratorFacade.winningNumbers()).willReturn(numbers);
+    }
+
+    private String userCheckResultByHash(String generatedHash) {
+        return resultAnnouncerFacade.checkResult(generatedHash);
     }
 }

@@ -27,7 +27,6 @@ public class ResultCheckerFacade {
     public void checkWinners() {
         Map<String, Set<Integer>> usersNumbers = numberReceiverFacade.allNumbersFromUsers();
         Set<Integer> winningNumbers = lottoNumberGeneratorFacade.winningNumbers();
-        System.out.println("Wewnątrz implementacji metody checkWinners(): " + lottoNumberGeneratorFacade.winningNumbers());
         Set<String> winners = new HashSet<>();
         usersNumbers.forEach((key, value) -> {
             if (value.equals(winningNumbers)) winners.add(key);
