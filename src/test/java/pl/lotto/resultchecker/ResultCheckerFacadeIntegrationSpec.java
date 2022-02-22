@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
+import pl.lotto.proxy.GenerateNumbersProxy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,10 +28,12 @@ class ResultCheckerFacadeIntegrationSpec {
     private NumberReceiverFacade numberReceiverFacade;
     @MockBean
     private LottoNumberGeneratorFacade lottoNumberGeneratorFacade;
+    @MockBean
+    private GenerateNumbersProxy generateNumbersProxy;
 
     @Autowired
     private ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration()
-            .resultCheckerFacadeForTests(numberReceiverFacade, lottoNumberGeneratorFacade);
+            .resultCheckerFacadeForTests(numberReceiverFacade, lottoNumberGeneratorFacade, generateNumbersProxy);
 
     Map<String, Set<Integer>> usersNumbers = new HashMap<>() {{
             put("hash1", Set.of(1, 2, 3, 4, 5, 6));

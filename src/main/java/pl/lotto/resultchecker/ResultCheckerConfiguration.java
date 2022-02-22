@@ -3,9 +3,8 @@ package pl.lotto.resultchecker;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
-import pl.lotto.numberreceiver.InMemoryNumberRepository;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
-import pl.lotto.numberreceiver.NumberValidatorImpl;
+import pl.lotto.proxy.GenerateNumbersProxy;
 
 @Configuration
 public class ResultCheckerConfiguration {
@@ -18,12 +17,14 @@ public class ResultCheckerConfiguration {
     @Bean
     public ResultCheckerFacade resultCheckerFacade(WinnersRepository winnersRepository,
                                                    NumberReceiverFacade numberReceiverFacade,
-                                                   LottoNumberGeneratorFacade lottoNumberGeneratorFacade) {
-        return new ResultCheckerFacade(winnersRepository, numberReceiverFacade, lottoNumberGeneratorFacade);
+                                                   LottoNumberGeneratorFacade lottoNumberGeneratorFacade,
+                                                   GenerateNumbersProxy generateNumbersProxy) {
+        return new ResultCheckerFacade(winnersRepository, numberReceiverFacade, lottoNumberGeneratorFacade, generateNumbersProxy);
     }
 
     public ResultCheckerFacade resultCheckerFacadeForTests(NumberReceiverFacade numberReceiverFacade,
-                                                           LottoNumberGeneratorFacade lottoNumberGeneratorFacade){
-        return resultCheckerFacade(new InMemoryWinnersRepository(), numberReceiverFacade, lottoNumberGeneratorFacade);
+                                                           LottoNumberGeneratorFacade lottoNumberGeneratorFacade,
+                                                           GenerateNumbersProxy generateNumbersProxy){
+        return resultCheckerFacade(new InMemoryWinnersRepository(), numberReceiverFacade, lottoNumberGeneratorFacade, generateNumbersProxy);
     }
 }

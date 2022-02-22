@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
+import pl.lotto.proxy.GenerateNumbersProxy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +25,10 @@ class ResultCheckerFacadeSpec {
             mock(NumberReceiverFacade.class);
     private final LottoNumberGeneratorFacade lottoNumberGeneratorFacade =
             mock(LottoNumberGeneratorFacade.class);
+    private final GenerateNumbersProxy generateNumbersProxy =
+            mock(GenerateNumbersProxy.class);
     private final ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration()
-            .resultCheckerFacadeForTests(numberReceiverFacade, lottoNumberGeneratorFacade);
+            .resultCheckerFacadeForTests(numberReceiverFacade, lottoNumberGeneratorFacade, generateNumbersProxy);
     Map<String, Set<Integer>> usersNumbers = new HashMap<>() {{
             put("hash1", Set.of(1, 2, 3, 4, 5, 6));
             put("hash2", Set.of(1, 2, 3, 4, 5, 6));

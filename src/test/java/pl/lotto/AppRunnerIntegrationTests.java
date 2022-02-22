@@ -9,6 +9,8 @@ import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
 import pl.lotto.numberreceiver.NumberReceiverConfiguration;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
 import pl.lotto.numberreceiver.ResultMessage;
+import pl.lotto.proxy.GenerateNumbersProxy;
+import pl.lotto.proxy.GenerateNumbersProxyConfiguration;
 import pl.lotto.resultannouncer.ResultAnnouncerConfiguration;
 import pl.lotto.resultannouncer.ResultAnnouncerFacade;
 import pl.lotto.resultchecker.ResultCheckerConfiguration;
@@ -24,7 +26,7 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest
 class AppRunnerIntegrationTests {
 
-    @MockBean
+   /* @MockBean
     private LottoNumberGeneratorFacade lottoNumberGeneratorFacade;
 
     @Autowired
@@ -36,7 +38,7 @@ class AppRunnerIntegrationTests {
     private ResultAnnouncerFacade resultAnnouncerFacade = new ResultAnnouncerConfiguration()
             .resultAnnouncerFacade(resultCheckerFacade);
 
-    /*@Test
+    *//*@Test
     @DisplayName("User chooses correct numbers and receives acceptance information and hash code." +
             "Next checks result using hash code and receives win information.")
     public void user_chooses_correct_numbers_and_receives_acceptance_and_hash_code_then_checks_result_and_receives_win_information() {
@@ -53,7 +55,7 @@ class AppRunnerIntegrationTests {
                 () -> assertThat(receivedUserMessage, equalTo(numbersAccepted)),
                 () -> assertThat(resultUserMessage, equalTo("Winner"))
         );
-    }*/
+    }*//*
 
     @Test
     @DisplayName("User chooses correct numbers and receives acceptance information and hash code." +
@@ -72,7 +74,7 @@ class AppRunnerIntegrationTests {
         );
     }
 
-    /*@Test
+    *//*@Test
     @DisplayName("User chooses correct numbers and receives acceptance information and hash code." +
             "Next checks result using hash code and receives lose information.")
     public void user_chooses_correct_numbers_and_receives_acceptance_and_hash_code_then_checks_result_and_receives_lose_information() {
@@ -89,7 +91,7 @@ class AppRunnerIntegrationTests {
                 () -> assertThat(receivedUserMessage, equalTo(numbersAccepted)),
                 () -> assertThat(checkResultMessage, equalTo("Loser"))
         );
-    }*/
+    }*//*
 
     @Test
     @DisplayName("User chooses correct numbers and receives acceptance information and hash code." +
@@ -118,5 +120,5 @@ class AppRunnerIntegrationTests {
 
     private String userCheckResultByHash(String generatedHash) {
         return resultAnnouncerFacade.checkResult(generatedHash);
-    }
+    }*/
 }
