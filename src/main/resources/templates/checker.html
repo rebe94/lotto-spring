@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lotto Game</title>
+</head>
+    <body>
+        <h2>Check if You have won</h2>
+        <p>
+            <form action="/checker" method="post">
+            Hash code: <input type="text" name="hashCode"><br/>
+            <button type="submit">Check</button>
+            </form>
+        </p>
+        <p>
+            Message: <th th:text="${messageResult}">messageResult</th><br>
+        </p>
+        <small><a th:href="@{/home}">Back home page</a></small>
+    </body>
+</html>

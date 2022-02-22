@@ -22,7 +22,7 @@ public class NumberReceiverFacade {
             numberRepository.save(hash, sortedNumbers);
             return new ResultMessage("Accepted", hash);
         } else {
-            return new ResultMessage("Not accepted", "False");
+            return new ResultMessage("Wrong amount of numbers or numbers out of range", "False");
         }
     }
 

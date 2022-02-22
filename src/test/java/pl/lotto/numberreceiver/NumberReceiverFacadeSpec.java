@@ -33,7 +33,7 @@ class NumberReceiverFacadeSpec {
         ResultMessage result = numberReceiverFacade.inputNumbers(Set.of(1, 2, 3, 4, 5));
 
         // then
-        ResultMessage not_accepted = new ResultMessage("Not accepted", "False");
+        ResultMessage not_accepted = new ResultMessage("Wrong amount of numbers or numbers out of range", "False");
         assertThat(result, equalTo(not_accepted));
     }
 
@@ -44,7 +44,7 @@ class NumberReceiverFacadeSpec {
         ResultMessage result = numberReceiverFacade.inputNumbers(Set.of(1, 2, 3, 4, 5, 6, 7));
 
         // then
-        ResultMessage not_accepted = new ResultMessage("Not accepted", "False");
+        ResultMessage not_accepted = new ResultMessage("Wrong amount of numbers or numbers out of range", "False");
         assertThat(result, equalTo(not_accepted));
     }
 
@@ -55,7 +55,7 @@ class NumberReceiverFacadeSpec {
         ResultMessage result = numberReceiverFacade.inputNumbers(Set.of(1, 2, 3, 4, 5, 100));
 
         // then
-        ResultMessage not_accepted = new ResultMessage("Not accepted", "False");
+        ResultMessage not_accepted = new ResultMessage("Wrong amount of numbers or numbers out of range", "False");
         assertThat(result, equalTo(not_accepted));
     }
 }
