@@ -23,12 +23,12 @@ public class ResultCheckerController {
     @Autowired
     private ResultCheckerFacade resultCheckerFacade;
 
-    @GetMapping("/checker")
+    @GetMapping("/check")
     public String check() {
-        return "checker.html";
+        return "check.html";
     }
 
-    @PostMapping("/checker")
+    @PostMapping("/check")
     public String check(
             @RequestParam String hashCode,
             Model page) {
@@ -37,7 +37,7 @@ public class ResultCheckerController {
 
         page.addAttribute("messageResult", messageResult);
 
-        return "checker.html";
+        return "check.html";
     }
 
     private String checkResult(String hashCode) {
