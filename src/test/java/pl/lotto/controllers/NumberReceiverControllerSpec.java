@@ -23,7 +23,7 @@ class NumberReceiverControllerSpec {
     @Test
     @DisplayName("a")
     public void a() throws Exception {
-        mockMvc.perform(get("/receiver"))
+        mockMvc.perform(get("/receive"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("integer")));

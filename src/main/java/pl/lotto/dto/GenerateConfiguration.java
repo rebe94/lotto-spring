@@ -1,4 +1,4 @@
-package pl.lotto.model;
+package pl.lotto.dto;
 
 import lombok.Getter;
 import lombok.Setter;

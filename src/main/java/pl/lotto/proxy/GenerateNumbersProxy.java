@@ -7,7 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import pl.lotto.model.GenerateConfiguration;
+import pl.lotto.dto.GenerateConfiguration;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -38,18 +38,17 @@ public class GenerateNumbersProxy {
         headers.add("requestId", UUID.randomUUID().toString());
 
         GenerateConfiguration generateConfiguration = GenerateConfiguration.of
-                (6,1,99);
-        //(AMOUNT_OF_NUMBERS, LOWEST_NUMBER, HIGHEST_NUMBER);
+                (AMOUNT_OF_NUMBERS, LOWEST_NUMBER, HIGHEST_NUMBER);
         HttpEntity<GenerateConfiguration> httpEntity = new HttpEntity<>(generateConfiguration, headers);
 
         ResponseEntity<Integer[]> response =
                 rest.exchange(uri,
-                        HttpMethod.GET,
+                        HttpMethod.POST,
                         httpEntity,
                         Integer[].class);
 
         Integer[] body = response.getBody();
-        Set<Integer> set = Arrays.stream(body).collect(Collectors.toSet());
+        Set<Integer> set = Arrays.stream(body != null ? body : new Integer[0]).collect(Collectors.toSet());
         return new TreeSet<>(set);
     }
 }

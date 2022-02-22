@@ -22,13 +22,13 @@ public class NumberReceiverController {
     @Autowired
     private NumberReceiverFacade numberReceiverFacade;
 
-    @GetMapping("/receiver")
+    @GetMapping("/receive")
     public String receive(Model page) {
         init(page);
-        return "receiver.html";
+        return "receive.html";
     }
 
-    @PostMapping("/receiver")
+    @PostMapping("/receive")
     public String receive(
             @RequestParam String numbers,
             Model page) {
@@ -47,7 +47,7 @@ public class NumberReceiverController {
         page.addAttribute("messageForUser", messageForUser);
         page.addAttribute("generatedHash", generatedHash);
 
-        return "receiver.html";
+        return "receive.html";
     }
 
     private void init(Model page) {
