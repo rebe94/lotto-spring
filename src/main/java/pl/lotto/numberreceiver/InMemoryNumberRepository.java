@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class InMemoryNumberRepository implements NumberRepository {
+class InMemoryNumberRepository implements NumberRepository {
 
     private final Map<String, Set<Integer>> numbers = new HashMap<>();
 

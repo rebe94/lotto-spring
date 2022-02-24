@@ -1,4 +1,4 @@
-package pl.lotto.controllers;
+package pl.lotto.numberreceiver.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,16 +19,20 @@ import static pl.lotto.configuration.GameConfiguration.LOWEST_NUMBER;
 @Controller
 public class NumberReceiverController {
 
-    @Autowired
     private NumberReceiverFacade numberReceiverFacade;
 
-    @GetMapping("/receive")
-    public String receive(Model page) {
-        init(page);
-        return "receive.html";
+    @Autowired
+    public NumberReceiverController(NumberReceiverFacade numberReceiverFacade) {
+        this.numberReceiverFacade = numberReceiverFacade;
     }
 
-    @PostMapping("/receive")
+    @GetMapping("/receiver")
+    public String receive(Model page) {
+        init(page);
+        return "receiver.html";
+    }
+
+    @PostMapping("/receiver")
     public String receive(
             @RequestParam String numbers,
             Model page) {
@@ -47,7 +51,7 @@ public class NumberReceiverController {
         page.addAttribute("messageForUser", messageForUser);
         page.addAttribute("generatedHash", generatedHash);
 
-        return "receive.html";
+        return "receiver.html";
     }
 
     private void init(Model page) {

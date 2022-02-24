@@ -1,4 +1,4 @@
-package pl.lotto.dto;
+package pl.lotto.lottonumbergenerator.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,12 +9,10 @@ public class GenerateConfiguration {
 
     private Integer amountOfNumbers, lowestNumber, highestNumber;
 
-    public static GenerateConfiguration of(Integer amountOfNumbers, Integer lowestNumber, Integer highestNumber) {
-        GenerateConfiguration generateConfiguration = new GenerateConfiguration();
-        generateConfiguration.setAmountOfNumbers(amountOfNumbers);
-        generateConfiguration.setLowestNumber(lowestNumber);
-        generateConfiguration.setHighestNumber(highestNumber);
-        return generateConfiguration;
+    public GenerateConfiguration(Integer amountOfNumbers, Integer lowestNumber, Integer highestNumber) {
+        this.amountOfNumbers = amountOfNumbers;
+        this.lowestNumber = lowestNumber;
+        this.highestNumber = highestNumber;
     }
 
     @Override

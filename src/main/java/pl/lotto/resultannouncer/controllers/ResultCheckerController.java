@@ -1,4 +1,4 @@
-package pl.lotto.controllers;
+package pl.lotto.resultannouncer.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,15 +20,19 @@ import static pl.lotto.configuration.GameConfiguration.LOWEST_NUMBER;
 @Controller
 public class ResultCheckerController {
 
-    @Autowired
     private ResultCheckerFacade resultCheckerFacade;
 
-    @GetMapping("/check")
-    public String check() {
-        return "check.html";
+    @Autowired
+    public ResultCheckerController(ResultCheckerFacade resultCheckerFacade) {
+        this.resultCheckerFacade = resultCheckerFacade;
     }
 
-    @PostMapping("/check")
+    @GetMapping("/checker")
+    public String check() {
+        return "checker.html";
+    }
+
+    @PostMapping("/checker")
     public String check(
             @RequestParam String hashCode,
             Model page) {
@@ -37,7 +41,7 @@ public class ResultCheckerController {
 
         page.addAttribute("messageResult", messageResult);
 
-        return "check.html";
+        return "checker.html";
     }
 
     private String checkResult(String hashCode) {

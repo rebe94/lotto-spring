@@ -2,8 +2,9 @@ package pl.lotto.resultchecker;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import pl.lotto.lottonumbergenerator.LottoNumberGeneratorProxy;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
-import pl.lotto.proxy.GenerateNumbersProxy;
+import pl.lotto.lottonumbergenerator.LottoNumberGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,10 +23,10 @@ class ResultCheckerFacadeSpec {
 
     private final NumberReceiverFacade numberReceiverFacade =
             mock(NumberReceiverFacade.class);
-    private final GenerateNumbersProxy generateNumbersProxy =
-            mock(GenerateNumbersProxy.class);
+    private final LottoNumberGeneratorProxy lottoNumberGeneratorProxy =
+            mock(LottoNumberGeneratorProxy.class);
     private final ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration()
-            .resultCheckerFacadeForTests(numberReceiverFacade, generateNumbersProxy);
+            .resultCheckerFacadeForTests(numberReceiverFacade, lottoNumberGeneratorProxy);
     Map<String, Set<Integer>> usersNumbers = new HashMap<>() {{
             put("hash1", Set.of(1, 2, 3, 4, 5, 6));
             put("hash2", Set.of(1, 2, 3, 4, 5, 6));
@@ -40,7 +41,7 @@ class ResultCheckerFacadeSpec {
         given(numberReceiverFacade.allNumbersFromUsers())
                 .willReturn(usersNumbers);
         Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 6);
-        given(generateNumbersProxy.generateNumbers())
+        given(lottoNumberGeneratorProxy.generateNumbers().getWinningNumbers())
                 .willReturn(winningNumbers);
 
         // when
@@ -61,7 +62,7 @@ class ResultCheckerFacadeSpec {
         given(numberReceiverFacade.allNumbersFromUsers())
                 .willReturn(usersNumbers);
         Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 99);
-        given(generateNumbersProxy.generateNumbers())
+        given(lottoNumberGeneratorProxy.generateNumbers().getWinningNumbers())
                 .willReturn(winningNumbers);
 
         // when

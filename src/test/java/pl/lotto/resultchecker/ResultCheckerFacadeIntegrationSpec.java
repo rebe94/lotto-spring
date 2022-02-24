@@ -5,8 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import pl.lotto.lottonumbergenerator.LottoNumberGeneratorProxy;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
-import pl.lotto.proxy.GenerateNumbersProxy;
+import pl.lotto.lottonumbergenerator.LottoNumberGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,11 +27,11 @@ class ResultCheckerFacadeIntegrationSpec {
     @MockBean
     private NumberReceiverFacade numberReceiverFacade;
     @MockBean
-    private GenerateNumbersProxy generateNumbersProxy;
+    private LottoNumberGeneratorProxy lottoNumberGeneratorProxy;
 
     @Autowired
     private ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration()
-            .resultCheckerFacadeForTests(numberReceiverFacade, generateNumbersProxy);
+            .resultCheckerFacadeForTests(numberReceiverFacade, lottoNumberGeneratorProxy);
 
     Map<String, Set<Integer>> usersNumbers = new HashMap<>() {{
             put("hash1", Set.of(1, 2, 3, 4, 5, 6));
@@ -46,7 +47,7 @@ class ResultCheckerFacadeIntegrationSpec {
         given(numberReceiverFacade.allNumbersFromUsers())
                 .willReturn(usersNumbers);
         Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 6);
-        given(generateNumbersProxy.generateNumbers())
+        given(lottoNumberGeneratorProxy.generateNumbers().getWinningNumbers())
                 .willReturn(winningNumbers);
 
         // when
@@ -67,7 +68,7 @@ class ResultCheckerFacadeIntegrationSpec {
         given(numberReceiverFacade.allNumbersFromUsers())
                 .willReturn(usersNumbers);
         Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 99);
-        given(generateNumbersProxy.generateNumbers())
+        given(lottoNumberGeneratorProxy.generateNumbers().getWinningNumbers())
                 .willReturn(winningNumbers);
 
         // when

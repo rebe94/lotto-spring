@@ -1,4 +1,4 @@
-package pl.lotto.controllers;
+package pl.lotto;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,25 +7,22 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class NumberReceiverControllerSpec {
+class HomeControllerSpec {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    @DisplayName("a")
-    public void a() throws Exception {
-        mockMvc.perform(get("/receive"))
+    @DisplayName("Should return ok status when make home request")
+    public void should_return_ok_status_when_make_home_request() throws Exception {
+        mockMvc.perform(get("/home"))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("integer")));
+                .andExpect(status().isOk());
     }
 }

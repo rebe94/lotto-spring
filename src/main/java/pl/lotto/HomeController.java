@@ -1,4 +1,4 @@
-package pl.lotto.controllers;
+package pl.lotto;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

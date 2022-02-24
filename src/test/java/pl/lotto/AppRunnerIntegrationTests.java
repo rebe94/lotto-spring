@@ -2,13 +2,17 @@ package pl.lotto;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.web.client.RestTemplate;
+import pl.lotto.lottonumbergenerator.LottoNumberGeneratorProxy;
+import pl.lotto.lottonumbergenerator.dto.GenerateConfiguration;
+import pl.lotto.lottonumbergenerator.dto.WinningNumbers;
 import pl.lotto.numberreceiver.NumberReceiverConfiguration;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
 import pl.lotto.numberreceiver.ResultMessage;
-import pl.lotto.proxy.GenerateNumbersProxy;
 import pl.lotto.resultannouncer.ResultAnnouncerConfiguration;
 import pl.lotto.resultannouncer.ResultAnnouncerFacade;
 import pl.lotto.resultchecker.ResultCheckerConfiguration;
@@ -25,13 +29,13 @@ import static org.mockito.BDDMockito.given;
 class AppRunnerIntegrationTests {
 
     @MockBean
-    private GenerateNumbersProxy generateNumbersProxy;
+    private LottoNumberGeneratorProxy lottoNumberGeneratorProxy;
 
     @Autowired
     private NumberReceiverFacade numberReceiverFacade = new NumberReceiverConfiguration().numberReceiverFacadeForTests();
     @Autowired
     private ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration()
-            .resultCheckerFacadeForTests(numberReceiverFacade, generateNumbersProxy);
+            .resultCheckerFacadeForTests(numberReceiverFacade, lottoNumberGeneratorProxy);
     @Autowired
     private ResultAnnouncerFacade resultAnnouncerFacade = new ResultAnnouncerConfiguration()
             .resultAnnouncerFacade(resultCheckerFacade);
@@ -113,7 +117,7 @@ class AppRunnerIntegrationTests {
     }
 
     private void generatorDrawsWinningNumbers(Set<Integer> numbers) {
-        given(generateNumbersProxy.generateNumbers()).willReturn(numbers);
+        given(lottoNumberGeneratorProxy.generateNumbers().getWinningNumbers()).willReturn(numbers);
     }
 
     private String userCheckResultByHash(String generatedHash) {
