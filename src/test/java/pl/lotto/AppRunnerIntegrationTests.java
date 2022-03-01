@@ -2,14 +2,10 @@ package pl.lotto;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.web.client.RestTemplate;
-import pl.lotto.lottonumbergenerator.LottoNumberGeneratorProxy;
-import pl.lotto.lottonumbergenerator.dto.GenerateConfiguration;
-import pl.lotto.lottonumbergenerator.dto.WinningNumbers;
+import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
 import pl.lotto.numberreceiver.NumberReceiverConfiguration;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
 import pl.lotto.numberreceiver.ResultMessage;
@@ -29,13 +25,13 @@ import static org.mockito.BDDMockito.given;
 class AppRunnerIntegrationTests {
 
     @MockBean
-    private LottoNumberGeneratorProxy lottoNumberGeneratorProxy;
+    private LottoNumberGeneratorFacade lottoNumberGeneratorFacade;
 
     @Autowired
     private NumberReceiverFacade numberReceiverFacade = new NumberReceiverConfiguration().numberReceiverFacadeForTests();
     @Autowired
     private ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration()
-            .resultCheckerFacadeForTests(numberReceiverFacade, lottoNumberGeneratorProxy);
+            .resultCheckerFacadeForTests(numberReceiverFacade, lottoNumberGeneratorFacade);
     @Autowired
     private ResultAnnouncerFacade resultAnnouncerFacade = new ResultAnnouncerConfiguration()
             .resultAnnouncerFacade(resultCheckerFacade);
@@ -45,7 +41,8 @@ class AppRunnerIntegrationTests {
             "Next checks result using hash code and receives win information.")
     public void user_chooses_correct_numbers_and_receives_acceptance_and_hash_code_then_checks_result_and_receives_win_information() {
         final Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6);
-        given(generateNumbersProxy.generateNumbers()).willReturn(Set.of(1, 2, 3, 4, 5, 6));
+        final Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 6);
+        given(lottoNumberGeneratorFacade.getWinningNumbers()).willReturn(winningNumbers);
 
         final ResultMessage receivedUserMessage = numberReceiverFacade.inputNumbers(userNumbers);
         final String GENERATED_HASH = receivedUserMessage.getHash();
@@ -81,7 +78,8 @@ class AppRunnerIntegrationTests {
             "Next checks result using hash code and receives lose information.")
     public void user_chooses_correct_numbers_and_receives_acceptance_and_hash_code_then_checks_result_and_receives_lose_information() {
         final Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6);
-        given(generateNumbersProxy.generateNumbers()).willReturn(Set.of(1, 2, 3, 4, 5, 15));
+        final Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 15);
+        given(lottoNumberGeneratorFacade.getWinningNumbers()).willReturn(winningNumbers);
 
         final ResultMessage receivedUserMessage = numberReceiverFacade.inputNumbers(userNumbers);
         final String GENERATED_HASH = receivedUserMessage.getHash();
@@ -117,7 +115,7 @@ class AppRunnerIntegrationTests {
     }
 
     private void generatorDrawsWinningNumbers(Set<Integer> numbers) {
-        given(lottoNumberGeneratorProxy.generateNumbers().getWinningNumbers()).willReturn(numbers);
+        given(lottoNumberGeneratorFacade.getWinningNumbers()).willReturn(numbers);
     }
 
     private String userCheckResultByHash(String generatedHash) {

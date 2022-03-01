@@ -5,12 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import pl.lotto.lottonumbergenerator.LottoNumberGeneratorProxy;
+import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
-import pl.lotto.lottonumbergenerator.LottoNumberGenerator;
+import pl.lotto.numberreceiver.Ticket;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,28 +26,27 @@ class ResultCheckerFacadeIntegrationSpec {
     @MockBean
     private NumberReceiverFacade numberReceiverFacade;
     @MockBean
-    private LottoNumberGeneratorProxy lottoNumberGeneratorProxy;
+    private LottoNumberGeneratorFacade lottoNumberGeneratorFacade;
 
     @Autowired
     private ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration()
-            .resultCheckerFacadeForTests(numberReceiverFacade, lottoNumberGeneratorProxy);
+            .resultCheckerFacadeForTests(numberReceiverFacade, lottoNumberGeneratorFacade);
 
-    Map<String, Set<Integer>> usersNumbers = new HashMap<>() {{
-            put("hash1", Set.of(1, 2, 3, 4, 5, 6));
-            put("hash2", Set.of(1, 2, 3, 4, 5, 6));
-            put("hash3", Set.of(1, 2, 3, 4, 5, 7));
-            put("hash4", Set.of(1, 2, 3, 4, 5, 8));
+    Set<Ticket> ticketEntities = new HashSet<>() {{
+        add(new Ticket("hash1", Set.of(1, 2, 3, 4, 5, 6)));
+        add(new Ticket("hash2", Set.of(1, 2, 3, 4, 5, 6)));
+        add(new Ticket("hash3", Set.of(1, 2, 3, 4, 5, 7)));
+        add(new Ticket("hash4", Set.of(1, 2, 3, 4, 5, 8)));
         }};
 
     @Test
     @DisplayName("module should give a list of 2 winners")
     public void check_result_and_return_list_with_2_winners() {
         // given
-        given(numberReceiverFacade.allNumbersFromUsers())
-                .willReturn(usersNumbers);
-        Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 6);
-        given(lottoNumberGeneratorProxy.generateNumbers().getWinningNumbers())
-                .willReturn(winningNumbers);
+        given(numberReceiverFacade.getAllTickets())
+                .willReturn(ticketEntities);
+        final Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 6);
+        given(lottoNumberGeneratorFacade.getWinningNumbers()).willReturn(winningNumbers);
 
         // when
         resultCheckerFacade.checkWinners();
@@ -65,11 +63,10 @@ class ResultCheckerFacadeIntegrationSpec {
     @DisplayName("module should give an empty list without any winners")
     public void check_result_and_return_empty_list_without_any_winners() {
         // given
-        given(numberReceiverFacade.allNumbersFromUsers())
-                .willReturn(usersNumbers);
-        Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 99);
-        given(lottoNumberGeneratorProxy.generateNumbers().getWinningNumbers())
-                .willReturn(winningNumbers);
+        given(numberReceiverFacade.getAllTickets())
+                .willReturn(ticketEntities);
+        final Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 99);
+        given(lottoNumberGeneratorFacade.getWinningNumbers()).willReturn(winningNumbers);
 
         // when
         resultCheckerFacade.checkWinners();

@@ -7,7 +7,7 @@ public class ResultAnnouncerFacade {
 
     private final ResultCheckerFacade resultCheckerFacade;
 
-    public ResultAnnouncerFacade(ResultCheckerFacade resultCheckerFacade) {
+    ResultAnnouncerFacade(ResultCheckerFacade resultCheckerFacade) {
         this.resultCheckerFacade = resultCheckerFacade;
     }
 

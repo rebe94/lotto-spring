@@ -1,8 +1,8 @@
 package pl.lotto.lottonumbergenerator;
 
-import pl.lotto.lottonumbergenerator.dto.WinningNumbers;
+import pl.lotto.lottonumbergenerator.dto.WinningNumbersDto;
 
-public interface LottoNumberGenerator {
+interface LottoNumberGenerator {
 
-    WinningNumbers generateNumbers();
+    WinningNumbersDto getWinningNumbers();
 }

@@ -1,5 +1,10 @@
 package pl.lotto.configuration;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class GameConfiguration {
 
     public static final int LOWEST_NUMBER = 1;
