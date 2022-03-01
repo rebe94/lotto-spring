@@ -17,23 +17,23 @@ import static pl.lotto.configuration.GameConfiguration.HIGHEST_NUMBER;
 import static pl.lotto.configuration.GameConfiguration.LOWEST_NUMBER;
 
 @Controller
-public class NumberReceiverController {
+class NumberReceiverController {
 
     private NumberReceiverFacade numberReceiverFacade;
 
     @Autowired
-    public NumberReceiverController(NumberReceiverFacade numberReceiverFacade) {
+    NumberReceiverController(NumberReceiverFacade numberReceiverFacade) {
         this.numberReceiverFacade = numberReceiverFacade;
     }
 
     @GetMapping("/receiver")
-    public String receive(Model page) {
+    String receiver(Model page) {
         init(page);
         return "receiver.html";
     }
 
     @PostMapping("/receiver")
-    public String receive(
+    String receiver(
             @RequestParam String numbers,
             Model page) {
 

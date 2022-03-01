@@ -7,17 +7,17 @@ import org.springframework.context.annotation.Configuration;
 public class NumberReceiverConfiguration {
 
     @Bean
-    NumberRepository numberRepository() {
-        return new InMemoryNumberRepository();
+    TicketRepository ticketRepository() {
+        return new InMemoryTicketRepository();
     }
 
     @Bean
-    public NumberReceiverFacade numberReceiverFacade(NumberRepository numberRepository) {
+    NumberReceiverFacade numberReceiverFacade(TicketRepository ticketRepository) {
         NumberValidator numberValidator = new NumberValidatorImpl();
-        return new NumberReceiverFacade(numberValidator, numberRepository);
+        return new NumberReceiverFacade(numberValidator, ticketRepository);
     }
 
     public NumberReceiverFacade numberReceiverFacadeForTests(){
-        return numberReceiverFacade(new InMemoryNumberRepository());
+        return numberReceiverFacade(new InMemoryTicketRepository());
     }
 }

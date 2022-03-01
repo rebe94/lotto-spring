@@ -3,14 +3,14 @@ package pl.lotto.lottonumbergenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-import pl.lotto.lottonumbergenerator.dto.GenerateConfiguration;
+import pl.lotto.configuration.dto.GenerateConfigurationDto;
 
 import static pl.lotto.configuration.GameConfiguration.AMOUNT_OF_NUMBERS;
 import static pl.lotto.configuration.GameConfiguration.HIGHEST_NUMBER;
 import static pl.lotto.configuration.GameConfiguration.LOWEST_NUMBER;
 
 @Configuration
-public class LottoNumberGeneratorProxyConfiguration {
+class LottoNumberGeneratorConfiguration {
 
     @Bean
     RestTemplate restTemplate() {
@@ -18,12 +18,12 @@ public class LottoNumberGeneratorProxyConfiguration {
     }
 
     @Bean
-    GenerateConfiguration generateConfiguration() {
-        return new GenerateConfiguration(AMOUNT_OF_NUMBERS, LOWEST_NUMBER, HIGHEST_NUMBER);
+    LottoNumberGenerator lottoNumberGenerator(RestTemplate restTemplate) {
+        return new LottoNumberGeneratorProxyImpl(restTemplate);
     }
 
     @Bean
-    public LottoNumberGeneratorProxy lottoNumberGeneratorProxy(RestTemplate restTemplate, GenerateConfiguration generateConfiguration) {
-        return new LottoNumberGeneratorProxy(restTemplate, generateConfiguration);
+    LottoNumberGeneratorFacade lottoNumberGeneratorFacade(LottoNumberGenerator lottoNumberGenerator) {
+        return new LottoNumberGeneratorFacade(lottoNumberGenerator);
     }
 }

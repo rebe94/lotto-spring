@@ -1,6 +1,7 @@
 package pl.lotto.resultannouncer;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +14,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
+@Tag("SpringTest")
 @SpringBootTest
 class ResultAnnouncerFacadeIntegrationSpec {
 
@@ -22,7 +24,7 @@ class ResultAnnouncerFacadeIntegrationSpec {
     @Autowired
     private ResultAnnouncerFacade resultAnnouncerFacade;
 
-    Set<String> winners = new HashSet<>() {{
+    private final Set<String> winners = new HashSet<>() {{
         add("hash1");
         add("hash2");
         add("hash3");

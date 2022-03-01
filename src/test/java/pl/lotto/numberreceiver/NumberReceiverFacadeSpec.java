@@ -1,6 +1,7 @@
 package pl.lotto.numberreceiver;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -8,7 +9,7 @@ import java.util.Set;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-
+@Tag("WithoutSpringTest")
 class NumberReceiverFacadeSpec {
 
     private final NumberReceiverFacade numberReceiverFacade = new NumberReceiverConfiguration()

@@ -1,8 +1,10 @@
 package pl.lotto.lottonumbergenerator;
 
-import pl.lotto.lottonumbergenerator.dto.WinningNumbers;
+import pl.lotto.lottonumbergenerator.dto.WinningNumbersDto;
 
-public interface LottoNumberGenerator {
+import java.time.LocalDate;
 
-    WinningNumbers generateNumbers();
+interface LottoNumberGenerator {
+
+    WinningNumbersDto getWinningNumbers(LocalDate date);
 }

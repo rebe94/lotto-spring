@@ -1,6 +1,7 @@
 package pl.lotto.configuration;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -9,6 +10,7 @@ import static pl.lotto.configuration.GameConfiguration.AMOUNT_OF_NUMBERS;
 import static pl.lotto.configuration.GameConfiguration.HIGHEST_NUMBER;
 import static pl.lotto.configuration.GameConfiguration.LOWEST_NUMBER;
 
+@Tag("WithoutSpringTest")
 class GameConfigurationTest {
 
     @Test

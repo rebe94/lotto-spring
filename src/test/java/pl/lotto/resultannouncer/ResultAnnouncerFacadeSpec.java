@@ -1,6 +1,7 @@
 package pl.lotto.resultannouncer;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import pl.lotto.resultchecker.ResultCheckerFacade;
 
@@ -11,13 +12,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
+@Tag("WithoutSpringTest")
 class ResultAnnouncerFacadeSpec {
 
     private final ResultCheckerFacade resultCheckerFacade = mock(ResultCheckerFacade.class);
     private final ResultAnnouncerFacade resultAnnouncerFacade = new ResultAnnouncerConfiguration()
             .resultAnnouncerFacade(resultCheckerFacade);
 
-    Set<String> winners = new HashSet<>() {{
+    private final Set<String> winners = new HashSet<>() {{
         add("hash1");
         add("hash2");
         add("hash3");
