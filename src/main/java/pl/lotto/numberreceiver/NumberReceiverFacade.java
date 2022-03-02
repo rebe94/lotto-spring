@@ -18,7 +18,7 @@ public class NumberReceiverFacade {
 
     public NumberReceiverFacade(NumberValidator numbersValidator, TicketRepository ticketRepository) {
         this.numberValidator = numbersValidator;
-        this.ticketRepository = ticketRepository;
+        this.ticketRepository = ticketRepository;Ń
     }
 
     public ResultMessage inputNumbers(Set<Integer> numbers) {
