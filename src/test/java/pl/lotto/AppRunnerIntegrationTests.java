@@ -27,10 +27,9 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest
 class AppRunnerIntegrationTests {
 
-    private final LocalDate someDate = LocalDate.of(2000,1,1);
+    private final LocalDate SOME_DATE = LocalDate.of(2000,1,1);
     @MockBean
     private LottoNumberGeneratorFacade lottoNumberGeneratorFacade;
-
     @Autowired
     private NumberReceiverFacade numberReceiverFacade = new NumberReceiverConfiguration().numberReceiverFacadeForTests();
     @Autowired
@@ -46,13 +45,14 @@ class AppRunnerIntegrationTests {
     public void user_chooses_correct_numbers_and_receives_acceptance_and_hash_code_then_checks_result_and_receives_win_information() {
         final Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6);
         final Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 6);
-        given(lottoNumberGeneratorFacade.getWinningNumbers()).willReturn(winningNumbers);
+        given(lottoNumberGeneratorFacade.getWinningNumbers(someDate)).willReturn(winningNumbers);
 
         final ResultMessage receivedUserMessage = numberReceiverFacade.inputNumbers(userNumbers);
         final String GENERATED_HASH = receivedUserMessage.getHash();
+        final String DRAW_DATE = receivedUserMessage.getDrawDate();
         final String resultUserMessage = resultAnnouncerFacade.checkResult(GENERATED_HASH);
 
-        final ResultMessage numbersAccepted = new ResultMessage("Accepted", GENERATED_HASH);
+        final ResultMessage numbersAccepted = new ResultMessage("Accepted", GENERATED_HASH, DRAW_DATE);
 
         assertAll(
                 () -> assertThat(receivedUserMessage, equalTo(numbersAccepted)),
@@ -65,11 +65,12 @@ class AppRunnerIntegrationTests {
             "Next checks result using hash code and receives win information.")
     public void user_chooses_correct_numbers_and_receives_acceptance_and_hash_code_then_checks_result_and_receives_win_information() {
         final ResultMessage receivedUserMessage = userChoosesNumbers(Set.of(1, 2, 3, 4, 5, 6));
-        String GENERATED_HASH = receivedUserMessage.getHash();
+        final String GENERATED_HASH = receivedUserMessage.getHash();
+        final String DRAW_DATE = receivedUserMessage.getDrawingDate();
         generatorDrawsWinningNumbers(Set.of(1, 2, 3, 4, 5, 6));
         final String checkResultMessage = userCheckResultByHash(GENERATED_HASH);
 
-        final ResultMessage numbersAccepted = new ResultMessage("Accepted", GENERATED_HASH);
+        final ResultMessage numbersAccepted = new ResultMessage("Accepted", GENERATED_HASH, DRAW_DATE);
 
         assertAll(
                 () -> assertThat(receivedUserMessage, equalTo(numbersAccepted)),
@@ -77,19 +78,20 @@ class AppRunnerIntegrationTests {
         );
     }
 
-   /* @Test
+    /*@Test
     @DisplayName("User chooses correct numbers and receives acceptance information and hash code." +
             "Next checks result using hash code and receives lose information.")
     public void user_chooses_correct_numbers_and_receives_acceptance_and_hash_code_then_checks_result_and_receives_lose_information() {
         final Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6);
         final Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 15);
-        given(lottoNumberGeneratorFacade.getWinningNumbers()).willReturn(winningNumbers);
+        given(lottoNumberGeneratorFacade.getWinningNumbers(someDate)).willReturn(winningNumbers);
 
         final ResultMessage receivedUserMessage = numberReceiverFacade.inputNumbers(userNumbers);
         final String GENERATED_HASH = receivedUserMessage.getHash();
+        final String DRAW_DATE = receivedUserMessage.getDrawDate();
         final String checkResultMessage = resultAnnouncerFacade.checkResult(GENERATED_HASH);
 
-        final ResultMessage numbersAccepted = new ResultMessage("Accepted", GENERATED_HASH);
+        final ResultMessage numbersAccepted = new ResultMessage("Accepted", GENERATED_HASH, DRAW_DATE);
 
         assertAll(
                 () -> assertThat(receivedUserMessage, equalTo(numbersAccepted)),
@@ -102,11 +104,12 @@ class AppRunnerIntegrationTests {
             "Next checks result using hash code and receives lose information.")
     public void user_chooses_correct_numbers_and_receives_acceptance_and_hash_code_then_checks_result_and_receives_lose_information() {
         final ResultMessage receivedUserMessage = userChoosesNumbers(Set.of(1, 2, 3, 4, 5, 6));
-        String GENERATED_HASH = receivedUserMessage.getHash();
+        final String GENERATED_HASH = receivedUserMessage.getHash();
+        final String DRAW_DATE = receivedUserMessage.getDrawingDate();
         generatorDrawsWinningNumbers(Set.of(1, 2, 3, 4, 5, 15));
         final String checkResultMessage = userCheckResultByHash(GENERATED_HASH);
 
-        final ResultMessage numbersAccepted = new ResultMessage("Accepted", GENERATED_HASH);
+        final ResultMessage numbersAccepted = new ResultMessage("Accepted", GENERATED_HASH, DRAW_DATE);
 
         assertAll(
                 () -> assertThat(receivedUserMessage, equalTo(numbersAccepted)),
@@ -119,7 +122,7 @@ class AppRunnerIntegrationTests {
     }
 
     private void generatorDrawsWinningNumbers(Set<Integer> numbers) {
-        given(lottoNumberGeneratorFacade.getWinningNumbers(someDate)).willReturn(numbers);
+        given(lottoNumberGeneratorFacade.getWinningNumbers(SOME_DATE)).willReturn(numbers);
     }
 
     private String userCheckResultByHash(String generatedHash) {

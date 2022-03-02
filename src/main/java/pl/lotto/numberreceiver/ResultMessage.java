@@ -6,4 +6,5 @@ import lombok.Value;
 public class ResultMessage {
     String message;
     String hash;
+    String drawingDate;
 }

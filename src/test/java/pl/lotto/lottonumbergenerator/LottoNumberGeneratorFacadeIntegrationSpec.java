@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import pl.lotto.lottonumbergenerator.dto.WinningNumbersDto;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -21,14 +20,13 @@ import static pl.lotto.configuration.GameConfiguration.LOWEST_NUMBER;
 
 import java.time.LocalDate;
 import java.util.Set;
-import java.util.TreeSet;
 
 @Tag("SpringTest")
 @SpringBootTest
 class LottoNumberGeneratorFacadeIntegrationSpec {
 
     private final WinningNumbersDto winningNumbersDto = new WinningNumbersDto(Set.of(1,2,3,4,5,6));
-    private final LocalDate someDate = LocalDate.of(2000,1,1);
+    private final LocalDate SOME_DATE = LocalDate.of(2000,1,1);
     @MockBean
     private LottoNumberGenerator lottoNumberGenerator;
     @Autowired
@@ -38,9 +36,9 @@ class LottoNumberGeneratorFacadeIntegrationSpec {
     @DisplayName("Should send request to lotto number generator service and receive winning numbers according to generate configuration")
     public void should_send_request_to_lotto_number_generator_service_and_receive_winning_numbers_according_to_generate_configuration() {
         // given
-        given(lottoNumberGenerator.getWinningNumbers(someDate)).willReturn(winningNumbersDto);
+        given(lottoNumberGenerator.getWinningNumbers(SOME_DATE)).willReturn(winningNumbersDto);
         // when
-        Set<Integer> winningNumbers = lottoNumberGeneratorFacade.getWinningNumbers(someDate);
+        Set<Integer> winningNumbers = lottoNumberGeneratorFacade.getWinningNumbers(SOME_DATE);
         System.out.println(winningNumbers);
 
         // then

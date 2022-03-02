@@ -9,19 +9,19 @@ import pl.lotto.numberreceiver.NumberReceiverFacade;
 public class ResultCheckerConfiguration {
 
     @Bean
-    WinnersRepository winnersRepository() {
-        return new InMemoryWinnersRepository();
+    WinnerRepository winnersRepository() {
+        return new InMemoryWinnerRepository();
     }
 
     @Bean
-    ResultCheckerFacade resultCheckerFacade(WinnersRepository winnersRepository,
-                                                   NumberReceiverFacade numberReceiverFacade,
-                                                   LottoNumberGeneratorFacade lottoNumberGeneratorFacade) {
-        return new ResultCheckerFacade(winnersRepository, numberReceiverFacade, lottoNumberGeneratorFacade);
+    ResultCheckerFacade resultCheckerFacade(WinnerRepository winnerRepository,
+                                            NumberReceiverFacade numberReceiverFacade,
+                                            LottoNumberGeneratorFacade lottoNumberGeneratorFacade) {
+        return new ResultCheckerFacade(winnerRepository, numberReceiverFacade, lottoNumberGeneratorFacade);
     }
 
     public ResultCheckerFacade resultCheckerFacadeForTests(NumberReceiverFacade numberReceiverFacade,
                                                            LottoNumberGeneratorFacade lottoNumberGeneratorFacade){
-        return resultCheckerFacade(new InMemoryWinnersRepository(), numberReceiverFacade, lottoNumberGeneratorFacade);
+        return resultCheckerFacade(new InMemoryWinnerRepository(), numberReceiverFacade, lottoNumberGeneratorFacade);
     }
 }

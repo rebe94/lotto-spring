@@ -1,11 +1,9 @@
 package pl.lotto.resultchecker;
 
-import org.springframework.stereotype.Repository;
-
 import java.util.HashSet;
 import java.util.Set;
 
-class InMemoryWinnersRepository implements WinnersRepository {
+class InMemoryWinnerRepository implements WinnerRepository {
 
     private Set<String> winners = new HashSet<>();
 

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -18,15 +19,19 @@ class NumberReceiverFacadeIntegrationSpec {
     @Autowired
     private NumberReceiverFacade numberReceiverFacade;
 
+    private final ResultMessage not_accepted = new ResultMessage
+            ("Wrong amount of numbers or numbers out of range", "False", "False");
+
     @Test
     @DisplayName("module should accept when user gave exactly 6 numbers in range")
     public void receive_six_numbers_and_return_they_are_accepted() {
         // when
-        ResultMessage result = numberReceiverFacade.inputNumbers(Set.of(1, 2, 3, 4, 5, 6));
+        final ResultMessage result = numberReceiverFacade.inputNumbers(Set.of(1, 2, 3, 4, 5, 6));
         final String SOME_HASH = result.getHash();
+        final String SOME_DATE = result.getDrawingDate();
 
         // then
-        ResultMessage accepted = new ResultMessage("Accepted", SOME_HASH);
+        ResultMessage accepted = new ResultMessage("Accepted", SOME_HASH, SOME_DATE);
         assertThat(result, equalTo(accepted));
     }
 
@@ -37,7 +42,6 @@ class NumberReceiverFacadeIntegrationSpec {
         ResultMessage result = numberReceiverFacade.inputNumbers(Set.of(1, 2, 3, 4, 5));
 
         // then
-        ResultMessage not_accepted = new ResultMessage("Wrong amount of numbers or numbers out of range", "False");
         assertThat(result, equalTo(not_accepted));
     }
 
@@ -48,7 +52,6 @@ class NumberReceiverFacadeIntegrationSpec {
         ResultMessage result = numberReceiverFacade.inputNumbers(Set.of(1, 2, 3, 4, 5, 6, 7));
 
         // then
-        ResultMessage not_accepted = new ResultMessage("Wrong amount of numbers or numbers out of range", "False");
         assertThat(result, equalTo(not_accepted));
     }
 
@@ -59,7 +62,6 @@ class NumberReceiverFacadeIntegrationSpec {
         ResultMessage result = numberReceiverFacade.inputNumbers(Set.of(1, 2, 3, 4, 5, 100));
 
         // then
-        ResultMessage not_accepted = new ResultMessage("Wrong amount of numbers or numbers out of range", "False");
         assertThat(result, equalTo(not_accepted));
     }
 }

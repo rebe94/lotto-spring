@@ -35,22 +35,22 @@ class ResultCheckerFacadeIntegrationSpec {
     private ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration()
             .resultCheckerFacadeForTests(numberReceiverFacade, lottoNumberGeneratorFacade);
 
-    private final LocalDate someDate = LocalDate.of(2000,1,1);
-    private final Set<Ticket> ticketEntities = new HashSet<>() {{
-        add(new Ticket("hash1", Set.of(1, 2, 3, 4, 5, 6)));
-        add(new Ticket("hash2", Set.of(1, 2, 3, 4, 5, 6)));
-        add(new Ticket("hash3", Set.of(1, 2, 3, 4, 5, 7)));
-        add(new Ticket("hash4", Set.of(1, 2, 3, 4, 5, 8)));
+    private final LocalDate SOME_DATE = LocalDate.of(2000,1,1);
+    private final Set<Ticket> tickets = new HashSet<>() {{
+        add(new Ticket("hash1", Set.of(1, 2, 3, 4, 5, 6), SOME_DATE));
+        add(new Ticket("hash2", Set.of(1, 2, 3, 4, 5, 6), SOME_DATE));
+        add(new Ticket("hash3", Set.of(1, 2, 3, 4, 5, 7), SOME_DATE));
+        add(new Ticket("hash4", Set.of(1, 2, 3, 4, 5, 8), SOME_DATE));
         }};
 
     @Test
     @DisplayName("module should give a list of 2 winners")
     public void check_result_and_return_list_with_2_winners() {
         // given
-        given(numberReceiverFacade.getAllTickets())
-                .willReturn(ticketEntities);
+        given(numberReceiverFacade.getAllTicketsByDrawingDate(SOME_DATE))
+                .willReturn(tickets);
         final Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 6);
-        given(lottoNumberGeneratorFacade.getWinningNumbers(someDate)).willReturn(winningNumbers);
+        given(lottoNumberGeneratorFacade.getWinningNumbers(SOME_DATE)).willReturn(winningNumbers);
 
         // when
         resultCheckerFacade.checkWinnersAfterDraw();
@@ -67,10 +67,10 @@ class ResultCheckerFacadeIntegrationSpec {
     @DisplayName("module should give an empty list without any winners")
     public void check_result_and_return_empty_list_without_any_winners() {
         // given
-        given(numberReceiverFacade.getAllTickets())
-                .willReturn(ticketEntities);
+        given(numberReceiverFacade.getAllTicketsByDrawingDate(SOME_DATE))
+                .willReturn(tickets);
         final Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 99);
-        given(lottoNumberGeneratorFacade.getWinningNumbers(someDate)).willReturn(winningNumbers);
+        given(lottoNumberGeneratorFacade.getWinningNumbers(SOME_DATE)).willReturn(winningNumbers);
 
         // when
         resultCheckerFacade.checkWinnersAfterDraw();

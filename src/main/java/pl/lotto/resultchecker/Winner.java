@@ -1,4 +1,4 @@
-package pl.lotto.numberreceiver;
+package pl.lotto.resultchecker;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,8 +10,8 @@ import java.util.Set;
 
 @Getter
 @Setter
-@Document(collection = "tickets")
-public class Ticket {
+@Document(collection = "winners")
+public class Winner {
 
     @Id
     private String id;
@@ -19,7 +19,7 @@ public class Ticket {
     private Set<Integer> numbers;
     private LocalDate drawingDate;
 
-    public Ticket(String hash, Set<Integer> numbers, LocalDate drawingDate) {
+    public Winner(String hash, Set<Integer> numbers, LocalDate drawingDate) {
         this.hash = hash;
         this.numbers = numbers;
         this.drawingDate = drawingDate;

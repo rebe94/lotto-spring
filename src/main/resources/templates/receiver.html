@@ -6,6 +6,7 @@
 </head>
     <body>
         <h2>Let's play</h2>
+        Next drawing: <span th:text="${dateTimeOfNextDraw}">0000-00-00</span>.
         <p>Choose Your <span th:text="${amountOfNumbers}">0</span> integer numbers between <span th:text="${lowestNumber}">0</span>-<span th:text="${highestNumber}">0</span>.<br>
         Separate every number with one space key.<br>
         For example: 1 2 3 4 5 6<br>
@@ -20,6 +21,7 @@
             Message:   <th th:text="${messageForUser}">message</th><br>
             Hash code: <th th:text="${generatedHash}">hash</th>
         </p>
+        Copy Your hash code and check result today after <th th:text="${drawingTime}">drawingTime</th><br>
         <small><a th:href="@{/home}">Back home page</a></small>
     </body>
 </html>
