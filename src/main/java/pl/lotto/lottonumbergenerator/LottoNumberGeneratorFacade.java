@@ -1,5 +1,6 @@
 package pl.lotto.lottonumbergenerator;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import pl.lotto.lottonumbergenerator.dto.WinningNumbersDto;
 
 import java.time.LocalDate;

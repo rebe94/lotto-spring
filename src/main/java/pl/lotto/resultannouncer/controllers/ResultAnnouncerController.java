@@ -7,26 +7,27 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.lotto.resultchecker.ResultCheckerFacade;
+import pl.lotto.resultchecker.dto.WinnerDto;
 
-import java.util.Set;
+import java.util.List;
 
 @Controller
-class ResultCheckerController {
+class ResultAnnouncerController {
 
-    private ResultCheckerFacade resultCheckerFacade;
+    private final ResultCheckerFacade resultCheckerFacade;
 
     @Autowired
-    ResultCheckerController(ResultCheckerFacade resultCheckerFacade) {
+    ResultAnnouncerController(ResultCheckerFacade resultCheckerFacade) {
         this.resultCheckerFacade = resultCheckerFacade;
     }
 
-    @GetMapping("/checker")
-    String checker() {
-        return "checker.html";
+    @GetMapping("/announcer")
+    String announcer() {
+        return "announcer.html";
     }
 
-    @PostMapping("/checker")
-    String checker(
+    @PostMapping("/announcer")
+    String announcer(
             @RequestParam String hashCode,
             Model page) {
 
@@ -34,15 +35,14 @@ class ResultCheckerController {
 
         page.addAttribute("messageResult", messageResult);
 
-        return "checker.html";
+        return "announcer.html";
     }
 
     private String checkResult(String hashCode) {
         String messageResult = "Loser";
-        resultCheckerFacade.checkWinnersAfterDraw();
-        Set<String> winners = resultCheckerFacade.getWinners();
-        for (String winner : winners) {
-            if (winner.equals(hashCode)) {
+        List<WinnerDto> winners = resultCheckerFacade.getAllWinners().getList();
+        for (WinnerDto winner : winners) {
+            if (winner.getHash().equals(hashCode)) {
                 messageResult = "Winner";
                 break;
             }

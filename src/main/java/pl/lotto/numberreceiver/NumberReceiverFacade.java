@@ -5,11 +5,12 @@ import pl.lotto.numberreceiver.dto.TicketDto;
 import pl.lotto.numberreceiver.dto.TicketsDto;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class NumberReceiverFacade {
 
@@ -18,13 +19,17 @@ public class NumberReceiverFacade {
 
     public NumberReceiverFacade(NumberValidator numbersValidator, TicketRepository ticketRepository) {
         this.numberValidator = numbersValidator;
-        this.ticketRepository = ticketRepository;Ń
+        this.ticketRepository = ticketRepository;
     }
 
     public ResultMessage inputNumbers(Set<Integer> numbers) {
         if (numberValidator.numbersAreValid(numbers)) {
             String hash = UUID.randomUUID().toString();
-            Ticket ticket = new Ticket(hash, numbers, GameConfiguration.nextDrawingDate());
+            Ticket ticket = Ticket.builder()
+                    .hash(hash)
+                    .numbers(new TreeSet<>(numbers))
+                    .drawingDate(GameConfiguration.nextDrawingDate())
+                    .build();
             ticketRepository.save(ticket);
             Ticket addedTicket = ticketRepository.findByHash(hash);
             return new ResultMessage("Accepted", addedTicket.getHash(), addedTicket.getDrawingDate().toString()); //TODO czy nie powinno tu być @Transactional?
@@ -34,13 +39,14 @@ public class NumberReceiverFacade {
     }
 
     public TicketsDto getAllTicketsByDrawingDate(LocalDate drawingDate) {
-        List<TicketDto> ticketsDto = ticketRepository.findAllByDrawingDate(drawingDate)
+        List<TicketDto> ticketsDto = ticketRepository.findAllTicketsByDrawingDate(drawingDate)
                 .stream()
                 .map(ticket -> TicketDto.builder()
-                        .drawingDate(ticket.getDrawingDate())
                         .hash(ticket.getHash())
+                        .numbers(ticket.getNumbers())
+                        .drawingDate(ticket.getDrawingDate())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
         return TicketsDto.builder()
                 .list(ticketsDto)

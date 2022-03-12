@@ -7,8 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import pl.lotto.resultchecker.ResultCheckerFacade;
+import pl.lotto.resultchecker.dto.WinnerDto;
+import pl.lotto.resultchecker.dto.WinnersDto;
 
-import java.util.HashSet;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,17 +28,22 @@ class ResultAnnouncerFacadeIntegrationSpec {
     @Autowired
     private ResultAnnouncerFacade resultAnnouncerFacade;
 
-    private final Set<String> winners = new HashSet<>() {{
-        add("hash1");
-        add("hash2");
-        add("hash3");
+    final Set<Integer> SOME_NUMBERS = Set.of(1,2,3,4,5,6);
+    final LocalDate SOME_DATE = LocalDate.of(2000, 1, 1);
+    private final List<WinnerDto> winnersDtoList = new ArrayList<>() {{
+        add(new WinnerDto("hash1", SOME_NUMBERS, SOME_DATE));
+        add(new WinnerDto("hash2", SOME_NUMBERS, SOME_DATE));
+        add(new WinnerDto("hash3", SOME_NUMBERS, SOME_DATE));
     }};
+    private final WinnersDto winnersDto = WinnersDto.builder()
+            .list(winnersDtoList)
+            .build();
 
     @Test
     @DisplayName("Should return win message when hash is found as a winner")
     public void return_win_message_when_hash_is_found_as_a_winner() {
         // given
-        given(resultCheckerFacade.getWinners()).willReturn(winners);
+        given(resultCheckerFacade.getAllWinners()).willReturn(winnersDto);
 
         // when
         String win_message = resultAnnouncerFacade.checkResult("hash1");
@@ -47,7 +56,7 @@ class ResultAnnouncerFacadeIntegrationSpec {
     @DisplayName("Should return lost message when hash is not found as a winner")
     public void return_lost_message_when_hash_is_not_found_as_a_winner() {
         // given
-        given(resultCheckerFacade.getWinners()).willReturn(winners);
+        given(resultCheckerFacade.getAllWinners()).willReturn(winnersDto);
 
         // when
         String lost_message = resultAnnouncerFacade.checkResult("hash50");

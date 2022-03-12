@@ -9,11 +9,6 @@ import pl.lotto.numberreceiver.NumberReceiverFacade;
 public class ResultCheckerConfiguration {
 
     @Bean
-    WinnerRepository winnersRepository() {
-        return new InMemoryWinnerRepository();
-    }
-
-    @Bean
     ResultCheckerFacade resultCheckerFacade(WinnerRepository winnerRepository,
                                             NumberReceiverFacade numberReceiverFacade,
                                             LottoNumberGeneratorFacade lottoNumberGeneratorFacade) {

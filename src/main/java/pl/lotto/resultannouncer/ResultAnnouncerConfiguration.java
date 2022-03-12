@@ -8,7 +8,7 @@ import pl.lotto.resultchecker.ResultCheckerFacade;
 public class ResultAnnouncerConfiguration {
 
     @Bean
-    public ResultAnnouncerFacade resultAnnouncerFacade(ResultCheckerFacade resultCheckerFacade) {
-        return new ResultAnnouncerFacade(resultCheckerFacade);
+    public pl.lotto.resultannouncer.ResultAnnouncerFacade resultAnnouncerFacade(ResultCheckerFacade resultCheckerFacade) {
+        return new pl.lotto.resultannouncer.ResultAnnouncerFacade(resultCheckerFacade);
     }
 }

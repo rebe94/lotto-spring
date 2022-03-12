@@ -6,8 +6,9 @@
 </head>
     <body>
         <h2>Let's play</h2>
-        Next drawing: <span th:text="${dateTimeOfNextDraw}">0000-00-00</span>.
-        <p>Choose Your <span th:text="${amountOfNumbers}">0</span> integer numbers between <span th:text="${lowestNumber}">0</span>-<span th:text="${highestNumber}">0</span>.<br>
+        The closest drawing numbers will take a place on: <span th:text="${dateTimeOfNextDraw}">0000-00-00</span> at <th th:text="${drawingTime}">drawingTime</th>.
+        You need to play on time before <span th:text="${ticketReceiverClosingTime}">ticketReceiverClosingTime</span>
+        <p>Choose Your <span th:text="${amountOfNumbers}">0</span> integer numbers between <span th:text="${lowestNumber}">0</span>-<span th:text="${highestNumber}">0</span>.
         Separate every number with one space key.<br>
         For example: 1 2 3 4 5 6<br>
         </p>

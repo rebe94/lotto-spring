@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 public class NumberReceiverConfiguration {
 
     @Bean
-    NumberReceiverFacade numberReceiverFacade(TicketRepository ticketRepository) {
+    public NumberReceiverFacade numberReceiverFacade(TicketRepository ticketRepository) {
         NumberValidator numberValidator = new NumberValidatorImpl();
         return new NumberReceiverFacade(numberValidator, ticketRepository);
     }

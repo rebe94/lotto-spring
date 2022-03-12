@@ -1,5 +1,6 @@
 package pl.lotto.resultchecker;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -11,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Document(collection = "winners")
-public class Winner {
+class Winner {
 
     @Id
     private String id;
@@ -19,6 +20,7 @@ public class Winner {
     private Set<Integer> numbers;
     private LocalDate drawingDate;
 
+    @Builder
     public Winner(String hash, Set<Integer> numbers, LocalDate drawingDate) {
         this.hash = hash;
         this.numbers = numbers;

@@ -1,14 +1,21 @@
 package pl.lotto.numberreceiver;
 
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery;
+
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 class InMemoryTicketRepository implements TicketRepository {
 
-    private final Set<Ticket> tickets = new HashSet<>();
+    private final List<Ticket> tickets = new ArrayList<>();
 
     @Override
     public Ticket save(Ticket ticket) {
@@ -17,19 +24,127 @@ class InMemoryTicketRepository implements TicketRepository {
     }
 
     @Override
-    public Set<Ticket> findAll() {
-        return tickets;
-    }
-
-    @Override
     public Ticket findByHash(String hash) {
-        Optional<Ticket> foundTicket = tickets.stream().filter(t -> t.getHash().equals(hash)).findFirst();
+        Optional<Ticket> foundTicket = tickets.stream()
+                .filter(t -> t.getHash().equals(hash))
+                .findFirst();
         return foundTicket.orElse(null);
     }
 
     @Override
-    public Set<Ticket> findAllByDrawingDate(LocalDate drawingDate) {
-        return tickets.stream().filter(t -> t.getDrawingDate().equals(drawingDate))
-                .collect(Collectors.toSet());
+    public List<Ticket> findAllTicketsByDrawingDate(LocalDate drawingDate) {
+        return tickets.stream()
+                .filter(ticket -> ticket.getDrawingDate().equals(drawingDate))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Ticket> findAll() {
+        return tickets;
+    }
+
+    @Override
+    public <S extends Ticket> List<S> saveAll(Iterable<S> entities) {
+        return null;
+    }
+
+    @Override
+    public Optional<Ticket> findById(String s) {
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean existsById(String s) {
+        return false;
+    }
+
+    @Override
+    public Iterable<Ticket> findAllById(Iterable<String> strings) {
+        return null;
+    }
+
+    @Override
+    public long count() {
+        return 0;
+    }
+
+    @Override
+    public void deleteById(String s) {
+
+    }
+
+    @Override
+    public void delete(Ticket entity) {
+
+    }
+
+    @Override
+    public void deleteAllById(Iterable<? extends String> strings) {
+
+    }
+
+    @Override
+    public void deleteAll(Iterable<? extends Ticket> entities) {
+
+    }
+
+    @Override
+    public void deleteAll() {
+
+    }
+
+    @Override
+    public List<Ticket> findAll(Sort sort) {
+        return null;
+    }
+
+    @Override
+    public Page<Ticket> findAll(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public <S extends Ticket> S insert(S entity) {
+        return null;
+    }
+
+    @Override
+    public <S extends Ticket> List<S> insert(Iterable<S> entities) {
+        return null;
+    }
+
+    @Override
+    public <S extends Ticket> Optional<S> findOne(Example<S> example) {
+        return Optional.empty();
+    }
+
+    @Override
+    public <S extends Ticket> List<S> findAll(Example<S> example) {
+        return null;
+    }
+
+    @Override
+    public <S extends Ticket> List<S> findAll(Example<S> example, Sort sort) {
+        return null;
+    }
+
+    @Override
+    public <S extends Ticket> Page<S> findAll(Example<S> example, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public <S extends Ticket> long count(Example<S> example) {
+        return 0;
+    }
+
+    @Override
+    public <S extends Ticket> boolean exists(Example<S> example) {
+        return false;
+    }
+
+    @Override
+    public <S extends Ticket, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+        return null;
     }
 }

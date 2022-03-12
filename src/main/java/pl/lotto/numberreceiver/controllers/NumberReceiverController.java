@@ -10,6 +10,7 @@ import pl.lotto.configuration.GameConfiguration;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
 import pl.lotto.numberreceiver.ResultMessage;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -17,11 +18,13 @@ import static pl.lotto.configuration.GameConfiguration.AMOUNT_OF_NUMBERS;
 import static pl.lotto.configuration.GameConfiguration.DRAWING_TIME;
 import static pl.lotto.configuration.GameConfiguration.HIGHEST_NUMBER;
 import static pl.lotto.configuration.GameConfiguration.LOWEST_NUMBER;
+import static pl.lotto.configuration.GameConfiguration.TICKET_RECEIVER_CLOSING_TIME;
 
 @Controller
 class NumberReceiverController {
 
-    private NumberReceiverFacade numberReceiverFacade;
+    private final NumberReceiverFacade numberReceiverFacade;
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     @Autowired
     NumberReceiverController(NumberReceiverFacade numberReceiverFacade) {
@@ -36,7 +39,7 @@ class NumberReceiverController {
 
     @PostMapping("/receiver")
     String receiver(
-            @RequestParam String numbers,
+            @RequestParam String input,
             Model page) {
 
         init(page);
@@ -44,7 +47,7 @@ class NumberReceiverController {
         String generatedHash = "False";
         String drawingDate = "False";
 
-        Set<Integer> setOfNumbers = checkIntegerNumbers(numbers);
+        Set<Integer> setOfNumbers = validateInputFromUser(input);
         if (setOfNumbers != null) {
             ResultMessage resultMessage = numberReceiverFacade.inputNumbers(setOfNumbers);
             messageForUser = resultMessage.getMessage();
@@ -63,11 +66,12 @@ class NumberReceiverController {
         page.addAttribute("amountOfNumbers", AMOUNT_OF_NUMBERS);
         page.addAttribute("lowestNumber", LOWEST_NUMBER);
         page.addAttribute("highestNumber", HIGHEST_NUMBER);
-        page.addAttribute("dateTimeOfNextDraw", GameConfiguration.nextDrawingDate().toString());
-        page.addAttribute("timeOfDrawing", DRAWING_TIME.toString());
+        page.addAttribute("dateTimeOfNextDraw", GameConfiguration.nextDrawingDate().format(dateFormatter).toString());
+        page.addAttribute("drawingTime", DRAWING_TIME.toString());
+        page.addAttribute("ticketReceiverClosingTime", TICKET_RECEIVER_CLOSING_TIME.toString());
     }
 
-    private Set<Integer> checkIntegerNumbers(String numbers) {
+    private Set<Integer> validateInputFromUser(String numbers) {
         Set<Integer> setOfNumbers = new TreeSet<>();
         String[] splited = numbers.trim().split(" ");
         try {

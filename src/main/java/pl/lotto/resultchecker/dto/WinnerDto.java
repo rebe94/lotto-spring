@@ -1,4 +1,4 @@
-package pl.lotto.numberreceiver.dto;
+package pl.lotto.resultchecker.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import java.util.Set;
 @Builder
 @Data
 @AllArgsConstructor
-public class TicketDto {
+public class WinnerDto {
 
         private String hash;
         private Set<Integer> numbers;

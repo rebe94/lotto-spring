@@ -1,9 +1,7 @@
 package pl.lotto.resultannouncer;
 
-import java.util.Set;
-
-import org.springframework.scheduling.annotation.Scheduled;
 import pl.lotto.resultchecker.ResultCheckerFacade;
+import pl.lotto.resultchecker.dto.WinnersDto;
 
 public class ResultAnnouncerFacade {
 
@@ -14,7 +12,7 @@ public class ResultAnnouncerFacade {
     }
 
     public String checkResult(String hash) {
-        Set<String> winners = resultCheckerFacade.getWinners();
-        return winners.stream().anyMatch(e -> e.equals(hash)) ? "Winner" : "Loser";
+        WinnersDto winners = resultCheckerFacade.getAllWinners();
+        return winners.getList().stream().anyMatch(e -> e.getHash().equals(hash)) ? "Winner" : "Loser";
     }
 }

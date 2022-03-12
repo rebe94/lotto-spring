@@ -1,29 +1,41 @@
 package pl.lotto.lottonumbergenerator;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.client.RestTemplate;
-import pl.lotto.configuration.dto.GenerateConfigurationDto;
 
-import static pl.lotto.configuration.GameConfiguration.AMOUNT_OF_NUMBERS;
-import static pl.lotto.configuration.GameConfiguration.HIGHEST_NUMBER;
-import static pl.lotto.configuration.GameConfiguration.LOWEST_NUMBER;
+import java.time.Duration;
 
 @Configuration
-class LottoNumberGeneratorConfiguration {
+public class LottoNumberGeneratorConfiguration {
 
-    @Bean
+    @Value("${name.generator.service.url}")
+    private String generateServiceUrl;
+
+   /* @Bean
     RestTemplate restTemplate() {
         return new RestTemplate();
-    }
+    }*/
+
+    /*@Bean
+    String generateServiceUrl() {
+        return generateServiceUrl;
+    }*/
 
     @Bean
     LottoNumberGenerator lottoNumberGenerator(RestTemplate restTemplate) {
-        return new LottoNumberGeneratorProxyImpl(restTemplate);
+        return new LottoNumberGeneratorServiceImpl(restTemplate, generateServiceUrl);
     }
 
     @Bean
     LottoNumberGeneratorFacade lottoNumberGeneratorFacade(LottoNumberGenerator lottoNumberGenerator) {
         return new LottoNumberGeneratorFacade(lottoNumberGenerator);
     }
+
+
 }

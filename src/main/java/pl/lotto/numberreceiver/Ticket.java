@@ -1,5 +1,6 @@
 package pl.lotto.numberreceiver;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -11,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Document(collection = "tickets")
-public class Ticket {
+class Ticket {
 
     @Id
     private String id;
@@ -19,6 +20,7 @@ public class Ticket {
     private Set<Integer> numbers;
     private LocalDate drawingDate;
 
+    @Builder
     public Ticket(String hash, Set<Integer> numbers, LocalDate drawingDate) {
         this.hash = hash;
         this.numbers = numbers;
