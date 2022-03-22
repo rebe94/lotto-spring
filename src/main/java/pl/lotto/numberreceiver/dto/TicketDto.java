@@ -12,7 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class TicketDto {
 
-        private String hash;
-        private Set<Integer> numbers;
-        private LocalDate drawingDate;
+    private String hash;
+    private Set<Integer> numbers;
+    private LocalDate drawDate;
 }

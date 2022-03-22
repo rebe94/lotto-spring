@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 class InMemoryWinnerRepository implements WinnerRepository {
 
-    private List<Winner> winners = new ArrayList<>();
+    private final List<Winner> winners = new ArrayList<>();
 
     @Override
     public Winner save(Winner winner) {
@@ -27,11 +27,6 @@ class InMemoryWinnerRepository implements WinnerRepository {
     public <S extends Winner> List<S> saveAll(Iterable<S> entities) {
         entities.forEach(e -> winners.add(e));
         return (List<S>) winners;
-    }
-
-    public List<Winner> saveAll(List<Winner> winnersToAdd) {
-        winners.addAll(winnersToAdd);
-        return winners;
     }
 
     @Override

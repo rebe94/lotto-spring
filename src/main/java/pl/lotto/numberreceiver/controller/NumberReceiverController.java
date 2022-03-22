@@ -1,4 +1,4 @@
-package pl.lotto.numberreceiver.controllers;
+package pl.lotto.numberreceiver.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,14 +8,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 import pl.lotto.configuration.GameConfiguration;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
-import pl.lotto.numberreceiver.ResultMessage;
+import pl.lotto.numberreceiver.NumberReceiverValidationResult;
+import pl.lotto.numberreceiver.dto.ResultMessageDto;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
 import java.util.TreeSet;
 
 import static pl.lotto.configuration.GameConfiguration.AMOUNT_OF_NUMBERS;
-import static pl.lotto.configuration.GameConfiguration.DRAWING_TIME;
+import static pl.lotto.configuration.GameConfiguration.DRAW_TIME;
 import static pl.lotto.configuration.GameConfiguration.HIGHEST_NUMBER;
 import static pl.lotto.configuration.GameConfiguration.LOWEST_NUMBER;
 import static pl.lotto.configuration.GameConfiguration.TICKET_RECEIVER_CLOSING_TIME;
@@ -33,7 +34,7 @@ class NumberReceiverController {
 
     @GetMapping("/receiver")
     String receiver(Model page) {
-        init(page);
+        initialize(page);
         return "receiver.html";
     }
 
@@ -41,46 +42,36 @@ class NumberReceiverController {
     String receiver(
             @RequestParam String input,
             Model page) {
-
-        init(page);
-        String messageForUser = "Error due to not integers or space key mistake";
-        String generatedHash = "False";
-        String drawingDate = "False";
-
+        initialize(page);
+        ResultMessageDto resultMessageDto = NumberReceiverValidationResult.failed();
         Set<Integer> setOfNumbers = validateInputFromUser(input);
-        if (setOfNumbers != null) {
-            ResultMessage resultMessage = numberReceiverFacade.inputNumbers(setOfNumbers);
-            messageForUser = resultMessage.getMessage();
-            generatedHash = resultMessage.getHash();
-            drawingDate = resultMessage.getDrawingDate();
+        if (!setOfNumbers.isEmpty()) {
+            resultMessageDto = numberReceiverFacade.inputNumbers(setOfNumbers);
         }
-
-        page.addAttribute("messageForUser", messageForUser);
-        page.addAttribute("generatedHash", generatedHash);
-        page.addAttribute("drawingDate", drawingDate);
-
+        page.addAttribute("messageForUser", resultMessageDto.getMessage());
+        page.addAttribute("generatedHash", resultMessageDto.getHash());
+        page.addAttribute("drawDate", resultMessageDto.getDrawDate());
         return "receiver.html";
     }
 
-    private void init(Model page) {
+    private void initialize(Model page) {
         page.addAttribute("amountOfNumbers", AMOUNT_OF_NUMBERS);
         page.addAttribute("lowestNumber", LOWEST_NUMBER);
         page.addAttribute("highestNumber", HIGHEST_NUMBER);
-        page.addAttribute("dateTimeOfNextDraw", GameConfiguration.nextDrawingDate().format(dateFormatter).toString());
-        page.addAttribute("drawingTime", DRAWING_TIME.toString());
+        page.addAttribute("dateTimeOfNextDraw", GameConfiguration.nextDrawDate().format(dateFormatter).toString());
+        page.addAttribute("drawTime", DRAW_TIME.toString());
         page.addAttribute("ticketReceiverClosingTime", TICKET_RECEIVER_CLOSING_TIME.toString());
     }
 
     private Set<Integer> validateInputFromUser(String numbers) {
         Set<Integer> setOfNumbers = new TreeSet<>();
-        String[] splited = numbers.trim().split(" ");
+        String[] splitted = numbers.trim().split(" ");
         try {
-            for (String s : splited) {
+            for (String s : splitted) {
                 setOfNumbers.add(Integer.parseInt(s));
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
         return setOfNumbers;
     }

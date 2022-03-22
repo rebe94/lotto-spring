@@ -16,9 +16,9 @@ public class AppRunner {
         ConfigurableApplicationContext con = SpringApplication.run(AppRunner.class, args);
 
         NumberReceiverFacade receiver = con.getBean(NumberReceiverFacade.class);
-        System.out.println(receiver.inputNumbers(Set.of(1,2,3,4,5,6)));
+       /* System.out.println(receiver.inputNumbers(Set.of(1,2,3,4,5,6)));
         System.out.println(receiver.inputNumbers(Set.of(1,2,3,4,5,7)));
-        System.out.println(receiver.inputNumbers(Set.of(1,2,3,4,5,8)));
+        System.out.println(receiver.inputNumbers(Set.of(1,2,3,4,5,8)));*/
     }
 
 }

@@ -12,18 +12,18 @@ import java.util.Set;
 @Getter
 @Setter
 @Document(collection = "tickets")
-class Ticket {
+public class Ticket {
 
     @Id
     private String id;
     private String hash;
     private Set<Integer> numbers;
-    private LocalDate drawingDate;
+    private LocalDate drawDate;
 
     @Builder
-    public Ticket(String hash, Set<Integer> numbers, LocalDate drawingDate) {
+    public Ticket(String hash, Set<Integer> numbers, LocalDate drawDate) {
         this.hash = hash;
         this.numbers = numbers;
-        this.drawingDate = drawingDate;
+        this.drawDate = drawDate;
     }
 }

@@ -1,19 +1,22 @@
 package pl.lotto.resultchecker;
 
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Set;
 
-import org.apache.tomcat.jni.Local;
+import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
+import pl.lotto.lottonumbergenerator.dto.WinningNumbersDto;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
 import pl.lotto.numberreceiver.dto.TicketsDto;
 import pl.lotto.resultchecker.dto.WinnerDto;
 import pl.lotto.resultchecker.dto.WinnersDto;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 public class ResultCheckerFacade {
+
+    private static final Logger LOGGER = getLogger(ResultCheckerFacade.class.getName());
 
     private final WinnerRepository winnerRepository;
     private final NumberReceiverFacade numberReceiverFacade;
@@ -37,7 +40,7 @@ public class ResultCheckerFacade {
                 .map(winner -> WinnerDto.builder()
                         .hash(winner.getHash())
                         .numbers(winner.getNumbers())
-                        .drawingDate(winner.getDrawingDate())
+                        .drawDate(winner.getDrawDate())
                         .build())
                 .toList();
 
@@ -48,17 +51,28 @@ public class ResultCheckerFacade {
 
     @Scheduled(cron = "*/30 * * * * *")
     //@Scheduled(cron = "0 5 19 * * *")
-    public void checkWinnersAfterDraw() {
-        Set<Integer> winningNumbers = lottoNumberGeneratorFacade.getWinningNumbers(LocalDate.now());
-        TicketsDto ticketsDto = numberReceiverFacade.getAllTicketsByDrawingDate(LocalDate.now());
+    private void generateWinningNumbers() {
+        LocalDate drawingDate = LocalDate.now();
+        checkWinnersAfterDraw(drawingDate);
+    }
+
+    public void checkWinnersAfterDraw(LocalDate drawingDate) {
+        WinningNumbersDto winningNumbersDto = lottoNumberGeneratorFacade.getWinningNumbers(drawingDate);
+        if (!winningNumbersDto.getValidationMessage().equals(WinningNumbersDto.ValidationMessage.VALID)) {
+            LOGGER.error("Couldn't check winners scheduled for " + drawingDate);
+            return;
+        }
+
+        TicketsDto ticketsDto = numberReceiverFacade.getAllTicketsByDrawDate(drawingDate);
         List<Winner> winners = ticketsDto.getList().stream()
-                .filter(ticketDto -> ticketDto.getNumbers().equals(winningNumbers))
+                .filter(ticketDto -> ticketDto.getNumbers().equals(winningNumbersDto.getWinningNumbers()))
                 .map(ticketDto -> Winner.builder()
                         .hash(ticketDto.getHash())
                         .numbers(ticketDto.getNumbers())
-                        .drawingDate(ticketDto.getDrawingDate())
+                        .drawDate(ticketDto.getDrawDate())
                         .build())
                 .toList();
         winnerRepository.saveAll(winners);
+        LOGGER.info("Winners are correctly checked as scheduled for drawing date: " + drawingDate);
     }
 }

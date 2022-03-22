@@ -6,5 +6,5 @@ import java.time.LocalDate;
 
 public interface LottoNumberGenerator {
 
-    WinningNumbersDto getWinningNumbers(LocalDate date);
+    WinningNumbersDto getWinningNumbersRequest(LocalDate date);
 }

@@ -14,8 +14,7 @@ import static pl.lotto.configuration.GameConfiguration.LOWEST_NUMBER;
 class GameConfigurationTest {
 
     @Test
-    @DisplayName("configuration numbers should be determined correctly to proper application working")
-    void configuration_numbers_should_be_determined_correctly_to_proper_application_working() {
+    public void configuration_numbers_should_be_determined_correctly_for_proper_application_working() {
         assertThat((HIGHEST_NUMBER-LOWEST_NUMBER), greaterThanOrEqualTo(AMOUNT_OF_NUMBERS));
     }
 }

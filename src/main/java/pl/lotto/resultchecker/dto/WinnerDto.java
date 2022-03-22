@@ -14,5 +14,5 @@ public class WinnerDto {
 
         private String hash;
         private Set<Integer> numbers;
-        private LocalDate drawingDate;
+        private LocalDate drawDate;
 }

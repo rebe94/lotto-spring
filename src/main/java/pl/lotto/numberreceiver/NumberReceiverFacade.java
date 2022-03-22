@@ -1,16 +1,19 @@
 package pl.lotto.numberreceiver;
 
 import pl.lotto.configuration.GameConfiguration;
+import pl.lotto.numberreceiver.dto.ResultMessageDto;
 import pl.lotto.numberreceiver.dto.TicketDto;
 import pl.lotto.numberreceiver.dto.TicketsDto;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import static pl.lotto.numberreceiver.NumberReceiverValidationResult.accepted;
+import static pl.lotto.numberreceiver.NumberReceiverValidationResult.failed;
 
 public class NumberReceiverFacade {
 
@@ -22,29 +25,34 @@ public class NumberReceiverFacade {
         this.ticketRepository = ticketRepository;
     }
 
-    public ResultMessage inputNumbers(Set<Integer> numbers) {
-        if (numberValidator.numbersAreValid(numbers)) {
+    public ResultMessageDto inputNumbers(Set<Integer> numbers) {
+        if (numberValidator.isNumberValid(numbers)) {
             String hash = UUID.randomUUID().toString();
-            Ticket ticket = Ticket.builder()
+            Ticket generatedTicket = Ticket.builder()
                     .hash(hash)
                     .numbers(new TreeSet<>(numbers))
-                    .drawingDate(GameConfiguration.nextDrawingDate())
+                    .drawDate(GameConfiguration.nextDrawDate())
                     .build();
-            ticketRepository.save(ticket);
-            Ticket addedTicket = ticketRepository.findByHash(hash);
-            return new ResultMessage("Accepted", addedTicket.getHash(), addedTicket.getDrawingDate().toString()); //TODO czy nie powinno tu być @Transactional?
-        } else {
-            return new ResultMessage("Wrong amount of numbers or numbers out of range", "False", "False");
+            ticketRepository.save(generatedTicket);
+            Optional<Ticket> addedTicket = ticketRepository.findByHash(hash);
+            if (addedTicket.isPresent()) {
+                return accepted(addedTicket.get()); //TODO czy nie powinno być tutaj @Transactional?
+            }
         }
+        return failed();
     }
 
-    public TicketsDto getAllTicketsByDrawingDate(LocalDate drawingDate) {
-        List<TicketDto> ticketsDto = ticketRepository.findAllTicketsByDrawingDate(drawingDate)
+    public Optional<Ticket> findByHash(String hash) {
+        return ticketRepository.findByHash(hash);
+    }
+
+    public TicketsDto getAllTicketsByDrawDate(LocalDate drawDate) {
+        List<TicketDto> ticketsDto = ticketRepository.findAllByDrawDate(drawDate)
                 .stream()
                 .map(ticket -> TicketDto.builder()
                         .hash(ticket.getHash())
                         .numbers(ticket.getNumbers())
-                        .drawingDate(ticket.getDrawingDate())
+                        .drawDate(ticket.getDrawDate())
                         .build())
                 .toList();
 

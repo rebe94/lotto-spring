@@ -1,10 +1,9 @@
 package pl.lotto.numberreceiver;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import pl.lotto.numberreceiver.dto.ResultMessageDto;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -16,47 +15,53 @@ class NumberReceiverFacadeSpec {
     private final NumberReceiverFacade numberReceiverFacade = new NumberReceiverConfiguration()
             .numberReceiverFacadeForTests();
 
-    private final ResultMessage not_accepted = new ResultMessage
-            ("Wrong amount of numbers or numbers out of range", "False", "False");
+    private final ResultMessageDto not_accepted = NumberReceiverValidationResult.failed();
 
     @Test
-    @DisplayName("module should accept when user gave exactly 6 numbers in range")
-    public void receive_six_numbers_and_return_they_are_accepted() {
+    public void receives_6_numbers_and_returns_they_are_accepted() {
+        // given
+        Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6);
         // when
-        ResultMessage result = numberReceiverFacade.inputNumbers(Set.of(1, 2, 3, 4, 5, 6));
-        final String SOME_HASH = result.getHash();
-        final String SOME_DATE = result.getDrawingDate();
+        ResultMessageDto result = numberReceiverFacade.inputNumbers(userNumbers);
+        Ticket generatedTicket = Ticket.builder()
+                .hash(result.getHash())
+                .numbers(userNumbers)
+                .drawDate(result.getDrawDate())
+                .build();
+        ResultMessageDto accepted = NumberReceiverValidationResult.accepted(generatedTicket);
 
         // then
-        ResultMessage accepted = new ResultMessage("Accepted", SOME_HASH, SOME_DATE);
         assertThat(result, equalTo(accepted));
     }
 
     @Test
-    @DisplayName("module should not accept when user gave less than 6 numbers")
-    public void receive_5_numbers_and_return_they_are_falsed() {
+    public void receives_5_numbers_and_returns_they_are_falsed() {
+        // given
+        Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5);
         // when
-        ResultMessage result = numberReceiverFacade.inputNumbers(Set.of(1, 2, 3, 4, 5));
+        ResultMessageDto result = numberReceiverFacade.inputNumbers(userNumbers);
 
         // then
         assertThat(result, equalTo(not_accepted));
     }
 
     @Test
-    @DisplayName("module should not accept when user gave more than 6 numbers")
-    public void receive_7_numbers_and_return_they_are_falsed() {
+    public void receives_7_numbers_and_returns_they_are_falsed() {
+        // given
+        Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6, 7);
         // when
-        ResultMessage result = numberReceiverFacade.inputNumbers(Set.of(1, 2, 3, 4, 5, 6, 7));
+        ResultMessageDto result = numberReceiverFacade.inputNumbers(userNumbers);
 
         // then
         assertThat(result, equalTo(not_accepted));
     }
 
     @Test
-    @DisplayName("module should not accept when user gave number out of range")
-    public void receive_6_numbers_out_of_range_and_return_they_are_falsed() {
+    public void receives_6_numbers_out_of_range_and_returns_they_are_falsed() {
+        // given
+        Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 100);
         // when
-        ResultMessage result = numberReceiverFacade.inputNumbers(Set.of(1, 2, 3, 4, 5, 100));
+        ResultMessageDto result = numberReceiverFacade.inputNumbers(userNumbers);
 
         // then
         assertThat(result, equalTo(not_accepted));

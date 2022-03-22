@@ -7,7 +7,7 @@ import org.springframework.test.context.TestPropertySource;
         classes = AppRunner.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = "application.environment=integration"
-        )
-@TestPropertySource(locations="test.properties")
+)
+@TestPropertySource(locations = "classpath:test.properties")
 abstract public class BaseIntegrationSpec {
 }

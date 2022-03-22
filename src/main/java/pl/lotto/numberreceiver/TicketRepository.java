@@ -1,20 +1,16 @@
 package pl.lotto.numberreceiver;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
-interface TicketRepository extends MongoRepository<Ticket, String> {
-
-    Ticket save(Ticket ticket);
+public interface TicketRepository extends MongoRepository<Ticket, String> {
 
     List<Ticket> findAll();
 
-    Ticket findByHash(String hash);
+    Optional<Ticket> findByHash(String hash);
 
-    List<Ticket> findAllTicketsByDrawingDate(LocalDate drawingDate);
+    List<Ticket> findAllByDrawDate(LocalDate drawDate);
 }

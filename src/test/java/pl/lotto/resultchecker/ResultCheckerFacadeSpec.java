@@ -1,9 +1,9 @@
 package pl.lotto.resultchecker;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
+import pl.lotto.lottonumbergenerator.dto.WinningNumbersDto;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
 import pl.lotto.numberreceiver.dto.TicketDto;
 import pl.lotto.numberreceiver.dto.TicketsDto;
@@ -32,28 +32,31 @@ class ResultCheckerFacadeSpec {
             mock(LottoNumberGeneratorFacade.class);
     private final ResultCheckerFacade resultCheckerFacade = new ResultCheckerConfiguration()
             .resultCheckerFacadeForTests(numberReceiverFacade, lottoNumberGeneratorFacade);
-    private final LocalDate SOME_DATE = LocalDate.of(2000,1,1);
+
+    private final LocalDate DRAW_DATE = LocalDate.of(2000,1,1);
     private final List<TicketDto> ticketsDtoList = new ArrayList<>() {{
-        add(new TicketDto("hash1", Set.of(1, 2, 3, 4, 5, 6), SOME_DATE));
-        add(new TicketDto("hash2", Set.of(1, 2, 3, 4, 5, 6), SOME_DATE));
-        add(new TicketDto("hash3", Set.of(1, 2, 3, 4, 5, 7), SOME_DATE));
-        add(new TicketDto("hash4", Set.of(1, 2, 3, 4, 5, 8), SOME_DATE));
+        add(new TicketDto("hash1", Set.of(1, 2, 3, 4, 5, 6), DRAW_DATE));
+        add(new TicketDto("hash2", Set.of(1, 2, 3, 4, 5, 6), DRAW_DATE));
+        add(new TicketDto("hash3", Set.of(1, 2, 3, 4, 5, 7), DRAW_DATE));
+        add(new TicketDto("hash4", Set.of(1, 2, 3, 4, 5, 8), DRAW_DATE));
     }};
     private final TicketsDto ticketsDto = TicketsDto.builder()
             .list(ticketsDtoList)
             .build();
 
     @Test
-    @DisplayName("module should give a list of 2 winners")
-    public void check_result_and_return_list_with_2_winners() {
+    public void checks_result_and_returns_list_with_2_winners() {
         // given
-        given(numberReceiverFacade.getAllTicketsByDrawingDate(any()))
-                .willReturn(ticketsDto);
+        given(numberReceiverFacade.getAllTicketsByDrawDate(any())).willReturn(ticketsDto);
         final Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 6);
-        given(lottoNumberGeneratorFacade.getWinningNumbers(any())).willReturn(winningNumbers);
+        WinningNumbersDto winningNumbersDto = WinningNumbersDto.builder()
+                .winningNumbers(winningNumbers)
+                .validationMessage(WinningNumbersDto.ValidationMessage.VALID)
+                .build();
+        given(lottoNumberGeneratorFacade.getWinningNumbers(any())).willReturn(winningNumbersDto);
 
         // when
-        resultCheckerFacade.checkWinnersAfterDraw();
+        resultCheckerFacade.checkWinnersAfterDraw(DRAW_DATE);
         List<String> winnersHash = resultCheckerFacade.getWinnersList().stream()
                 .map(Winner::getHash)
                 .toList();
@@ -66,16 +69,18 @@ class ResultCheckerFacadeSpec {
     }
 
     @Test
-    @DisplayName("module should give an empty list without any winners")
-    public void check_result_and_return_empty_list_without_any_winners() {
+    public void checks_result_and_returns_empty_list_without_any_winners() {
         // given
-        given(numberReceiverFacade.getAllTicketsByDrawingDate(any()))
-                .willReturn(ticketsDto);
+        given(numberReceiverFacade.getAllTicketsByDrawDate(any())).willReturn(ticketsDto);
         final Set<Integer> winningNumbers = Set.of(1, 2, 3, 4, 5, 99);
-        given(lottoNumberGeneratorFacade.getWinningNumbers(any())).willReturn(winningNumbers);
+        WinningNumbersDto winningNumbersDto = WinningNumbersDto.builder()
+                .winningNumbers(winningNumbers)
+                .validationMessage(WinningNumbersDto.ValidationMessage.VALID)
+                .build();
+        given(lottoNumberGeneratorFacade.getWinningNumbers(any())).willReturn(winningNumbersDto);
 
         // when
-        resultCheckerFacade.checkWinnersAfterDraw();
+        resultCheckerFacade.checkWinnersAfterDraw(DRAW_DATE);
         List<String> winnersHash = resultCheckerFacade.getWinnersList().stream()
                 .map(Winner::getHash)
                 .toList();

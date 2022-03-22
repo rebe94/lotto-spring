@@ -1,8 +1,8 @@
-package pl.lotto.numberreceiver;
+package pl.lotto.lottonumbergenerator;
 
 import java.util.Set;
 
-interface NumberValidator {
+interface WinningNumberValidator {
 
     boolean isNumberValid(Set<Integer> numbers);
 }

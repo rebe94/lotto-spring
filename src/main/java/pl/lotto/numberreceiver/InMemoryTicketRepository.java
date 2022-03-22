@@ -18,23 +18,22 @@ class InMemoryTicketRepository implements TicketRepository {
     private final List<Ticket> tickets = new ArrayList<>();
 
     @Override
-    public Ticket save(Ticket ticket) {
-        tickets.add(ticket);
-        return ticket; //TODO zwrócić rzeczywisty obiekt z pamięci/bazy
+    public <S extends Ticket> S save(S entity) {
+        tickets.add(entity);
+        return entity;
     }
 
     @Override
-    public Ticket findByHash(String hash) {
-        Optional<Ticket> foundTicket = tickets.stream()
+    public Optional<Ticket> findByHash(String hash) {
+        return tickets.stream()
                 .filter(t -> t.getHash().equals(hash))
                 .findFirst();
-        return foundTicket.orElse(null);
     }
 
     @Override
-    public List<Ticket> findAllTicketsByDrawingDate(LocalDate drawingDate) {
+    public List<Ticket> findAllByDrawDate(LocalDate drawDate) {
         return tickets.stream()
-                .filter(ticket -> ticket.getDrawingDate().equals(drawingDate))
+                .filter(ticket -> ticket.getDrawDate().equals(drawDate))
                 .collect(Collectors.toList());
     }
 
@@ -104,11 +103,6 @@ class InMemoryTicketRepository implements TicketRepository {
     }
 
     @Override
-    public <S extends Ticket> S insert(S entity) {
-        return null;
-    }
-
-    @Override
     public <S extends Ticket> List<S> insert(Iterable<S> entities) {
         return null;
     }
@@ -145,6 +139,11 @@ class InMemoryTicketRepository implements TicketRepository {
 
     @Override
     public <S extends Ticket, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+        return null;
+    }
+
+    @Override
+    public <S extends Ticket> S insert(S entity) {
         return null;
     }
 }

@@ -18,12 +18,12 @@ class Winner {
     private String id;
     private String hash;
     private Set<Integer> numbers;
-    private LocalDate drawingDate;
+    private LocalDate drawDate;
 
     @Builder
-    public Winner(String hash, Set<Integer> numbers, LocalDate drawingDate) {
+    public Winner(String hash, Set<Integer> numbers, LocalDate drawDate) {
         this.hash = hash;
         this.numbers = numbers;
-        this.drawingDate = drawingDate;
+        this.drawDate = drawDate;
     }
 }

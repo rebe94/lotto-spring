@@ -4,130 +4,131 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.util.SocketUtils;
 import org.springframework.web.client.RestTemplate;
+import pl.lotto.configuration.GameConfiguration;
 import pl.lotto.lottonumbergenerator.LottoNumberGenerator;
 import pl.lotto.lottonumbergenerator.LottoNumberGeneratorConfiguration;
 import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
-import pl.lotto.lottonumbergenerator.dto.WinningNumbersDto;
-import pl.lotto.numberreceiver.NumberReceiverConfiguration;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
-import pl.lotto.numberreceiver.ResultMessage;
+import pl.lotto.numberreceiver.NumberReceiverValidationResult;
+import pl.lotto.numberreceiver.Ticket;
+import pl.lotto.numberreceiver.TicketRepository;
+import pl.lotto.numberreceiver.dto.ResultMessageDto;
 import pl.lotto.resultannouncer.ResultAnnouncerFacade;
-import pl.lotto.resultchecker.ResultCheckerConfiguration;
 import pl.lotto.resultchecker.ResultCheckerFacade;
+import pl.lotto.resultchecker.WinnerRepository;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
+@Tag("SpringTest")
+@SpringBootTest
+class UserWinsIntegrationSpec extends BaseIntegrationSpec {
 
-public class UserWinsIntegrationSpec extends BaseIntegrationSpec {
-
-    //final LocalDate SOME_DATE = LocalDate.of(2000, 1, 1);
-
-    private static final int port = SocketUtils.findAvailableTcpPort();
-    private static final String urlServiceForTests = "http://localhost:" + port + "/";
     private WireMockServer wireMockServer;
-
-    @TestConfiguration
-    public static class IntegrationTestConfiguration {
-
-        @Bean
-        RestTemplate restTemplate() {
-            return new RestTemplateBuilder()
-                    .setConnectTimeout(Duration.ofMillis(1000))
-                    .setReadTimeout(Duration.ofMillis(1000))
-                    .build();
-        }
-
-        @Bean
-        String generateServiceUrl() {
-            return urlServiceForTests;
-        }
-    }
-
     @Autowired
     private NumberReceiverFacade numberReceiverFacade;
     @Autowired
     private ResultCheckerFacade resultCheckerFacade;
     @Autowired
     private ResultAnnouncerFacade resultAnnouncerFacade;
+    @Autowired
+    private TicketRepository ticketRepository;
+    @Autowired
+    private WinnerRepository winnerRepository;
+
+    private static final int port = SocketUtils.findAvailableTcpPort();
+    private static final String urlServiceForTest = "http://localhost:" + port + "/";
+
+    private final LocalDate NEXT_DRAW_DATE = LocalDate.of(2000, 1, 1);
+    private ResultMessageDto receivedUserMessage;
+    private String win_message;
+    private ResultMessageDto numbersAcceptedMessage;
+    private String checkResultMessage;
+
+    @TestConfiguration
+    public static class IntegrationTestConfiguration {
+
+        @Bean
+        LottoNumberGeneratorFacade lottoNumberGeneratorFacade() {
+            return new LottoNumberGeneratorConfiguration()
+                    .lottoNumberGeneratorFacadeForTests(urlServiceForTest);
+        }
+    }
 
     @BeforeEach
     void setup() {
         wireMockServer = new WireMockServer(options().port(port));
         wireMockServer.start();
         WireMock.configureFor(port);
-        System.out.println("test: " + urlServiceForTests);
     }
 
     @AfterEach
     void tearDown() {
         wireMockServer.stop();
+        ticketRepository.deleteAll();
+        winnerRepository.deleteAll();
     }
 
     @Test
     public void user_chooses_correct_numbers_and_receives_acceptance_and_hash_code_then_checks_result_and_receives_win_information() {
-        // given
-        // when
-        final ResultMessage receivedUserMessage = userChoosesNumbers(Set.of(1, 2, 3, 4, 5, 6));
-        final String GENERATED_HASH = receivedUserMessage.getHash();
-        final String DRAW_DATE = receivedUserMessage.getDrawingDate();
-        final ResultMessage numbersAccepted = new ResultMessage("Accepted", GENERATED_HASH, DRAW_DATE);
-        // then
-        assertThat(receivedUserMessage, equalTo(numbersAccepted));
+        try (MockedStatic<GameConfiguration> mocked = Mockito.mockStatic(GameConfiguration.class)) {
+            // given
+            mocked.when(GameConfiguration::nextDrawDate).thenReturn(NEXT_DRAW_DATE);
+            Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6);
+            // when
+            receivedUserMessage = userChoosesNumbers(userNumbers);
+            Ticket generatedTicket = Ticket.builder()
+                    .hash(receivedUserMessage.getHash())
+                    .numbers(userNumbers)
+                    .drawDate(receivedUserMessage.getDrawDate())
+                    .build();
+            numbersAcceptedMessage = NumberReceiverValidationResult.accepted(generatedTicket);
+            // then
+            assertThat(receivedUserMessage, equalTo(numbersAcceptedMessage));
 
-        // given
-        generatorDrawsWinningNumbers("1, 2, 3, 4, 5, 6");
-
-        // when
-        ticketsAreCheckingAndMarkingIfTheyWin();
-
-        final String checkResultMessage = userCheckResultByHash(GENERATED_HASH);
-        // then
-        assertThat(checkResultMessage, equalTo("Winner"));
+            // given
+            generatorDrawsWinningNumbersForDrawDay("1, 2, 3, 4, 5, 6");
+            ticketsAreCheckingAndMarkingIfTheyWin(generatedTicket.getDrawDate());
+            win_message = ResultAnnouncerFacade.win_message();
+            mocked.when(GameConfiguration::nextDrawDate).thenReturn(NEXT_DRAW_DATE.plusDays(1));
+            // when
+            checkResultMessage = userCheckResultByHash(generatedTicket.getHash());
+            // then
+            assertThat(checkResultMessage, equalTo(win_message));
+        }
     }
 
-    private ResultMessage userChoosesNumbers(Set<Integer> numbers) {
+    private ResultMessageDto userChoosesNumbers(Set<Integer> numbers) {
         return numberReceiverFacade.inputNumbers(numbers);
     }
 
-    private void generatorDrawsWinningNumbers(String generatedNumbers) {
+    private void generatorDrawsWinningNumbersForDrawDay(String generatedNumbers) {
         WireMock.stubFor(WireMock.get(urlPathEqualTo("/winningnumbers"))
                 .willReturn(WireMock.aResponse()
-                        .withBody("{" +
-                                "\"winningNumbers\" : [" + generatedNumbers + "]" +
-                                "}")
+                        .withBody("{\"winningNumbers\":[" + generatedNumbers + "]}")
                         .withHeader("Content-Type", "application/json")));
     }
 
-    /*private String createRequestParametersOfDate(LocalDate date) {
-        String day = date.getDayOfMonth() < 10 ? "0" + date.getDayOfMonth() : "" + date.getDayOfMonth();
-        String month = date.getMonthValue() < 10 ? "0" + date.getMonthValue() : "" + date.getMonthValue();
-        String year = String.valueOf(date.getYear());
-        return "year=" + year + "&" +
-                "month=" + month + "&" +
-                "day=" + day;
-    }*/
-
-    private void ticketsAreCheckingAndMarkingIfTheyWin() {
-        resultCheckerFacade.checkWinnersAfterDraw();
+    private void ticketsAreCheckingAndMarkingIfTheyWin(LocalDate drawingDate) {
+        resultCheckerFacade.checkWinnersAfterDraw(drawingDate);
     }
 
     private String userCheckResultByHash(String generatedHash) {
