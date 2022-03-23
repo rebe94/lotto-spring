@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Builder
 @Getter
-class WinningNumberValidationResult {
+class LottoNumberGeneratorMessageProvider {
 
     public static WinningNumbersDto valid(Set<Integer> winningNumbers) {
         return WinningNumbersDto.builder()

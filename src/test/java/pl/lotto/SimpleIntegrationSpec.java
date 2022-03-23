@@ -14,7 +14,6 @@ import pl.lotto.lottonumbergenerator.LottoNumberGeneratorConfiguration;
 import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
 import pl.lotto.numberreceiver.NumberReceiverConfiguration;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
-import pl.lotto.numberreceiver.NumberReceiverValidationResult;
 import pl.lotto.numberreceiver.Ticket;
 import pl.lotto.numberreceiver.dto.ResultMessageDto;
 import pl.lotto.resultannouncer.ResultAnnouncerConfiguration;
@@ -28,6 +27,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static pl.lotto.numberreceiver.NumberReceiverMessageProvider.accepted;
+import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.lose_message;
+import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.no_ticket_message;
+import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.win_message;
 
 @Tag("WithoutSpringTest")
 class SimpleIntegrationSpec {
@@ -46,9 +49,6 @@ class SimpleIntegrationSpec {
     private WireMockServer wireMockServer;
 
     private ResultMessageDto receivedUserMessage;
-    private String win_message;
-    private String lose_message;
-    private String no_ticket_message;
     private ResultMessageDto numbersAcceptedMessage;
     private String checkResultMessage;
 
@@ -77,19 +77,18 @@ class SimpleIntegrationSpec {
                     .numbers(userNumbers)
                     .drawDate(receivedUserMessage.getDrawDate())
                     .build();
-            numbersAcceptedMessage = NumberReceiverValidationResult.accepted(generatedTicket);
+            numbersAcceptedMessage = accepted(generatedTicket);
             // then
             assertThat(receivedUserMessage, equalTo(numbersAcceptedMessage));
 
             // given
             generatorDrawsWinningNumbersForDrawDay("1, 2, 3, 4, 5, 6");
             ticketsAreCheckingAndMarkingIfTheyWin(generatedTicket.getDrawDate());
-            win_message = ResultAnnouncerFacade.win_message();
             mocked.when(GameConfiguration::nextDrawDate).thenReturn(NEXT_DRAW_DATE.plusDays(1));
             // when
             checkResultMessage = userCheckResultByHash(generatedTicket.getHash());
             // then
-            assertThat(checkResultMessage, equalTo(win_message));
+            assertThat(checkResultMessage, equalTo(win_message()));
         }
     }
 
@@ -106,30 +105,28 @@ class SimpleIntegrationSpec {
                     .numbers(userNumbers)
                     .drawDate(receivedUserMessage.getDrawDate())
                     .build();
-            numbersAcceptedMessage = NumberReceiverValidationResult.accepted(generatedTicket);
+            numbersAcceptedMessage = accepted(generatedTicket);
             // then
             assertThat(receivedUserMessage, equalTo(numbersAcceptedMessage));
 
             // given
             generatorDrawsWinningNumbersForDrawDay("1, 2, 3, 4, 5, 15");
             ticketsAreCheckingAndMarkingIfTheyWin(generatedTicket.getDrawDate());
-            lose_message = ResultAnnouncerFacade.lose_message();
             mocked.when(GameConfiguration::nextDrawDate).thenReturn(NEXT_DRAW_DATE.plusDays(1));
             // when
             checkResultMessage = userCheckResultByHash(generatedTicket.getHash());
             // then
-            assertThat(checkResultMessage, equalTo(lose_message));
+            assertThat(checkResultMessage, equalTo(lose_message()));
         }
     }
 
     @Test
     public void user_checks_result_of_ticket_with_wrong_hash_code_and_receives_no_ticket_information() {
         // given
-        no_ticket_message = ResultAnnouncerFacade.no_ticket_message();
         // when
         checkResultMessage = userCheckResultByHash("not_existing_hash_code");
         // then
-        assertThat(checkResultMessage, equalTo(no_ticket_message));
+        assertThat(checkResultMessage, equalTo(no_ticket_message()));
     }
 
     private ResultMessageDto userChoosesNumbers(Set<Integer> numbers) {

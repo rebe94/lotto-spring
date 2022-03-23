@@ -1,5 +1,6 @@
 package pl.lotto.numberreceiver.dto;
 
+import lombok.Builder;
 import lombok.Value;
 
 import java.time.LocalDate;
@@ -7,7 +8,7 @@ import java.time.LocalDate;
 @Value
 public class ResultMessageDto {
 
-    private String message;
-    private String hash;
-    private LocalDate drawDate;
+    String message;
+    String hash;
+    LocalDate drawDate;
 }

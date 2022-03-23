@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
@@ -26,7 +25,7 @@ class LottoNumberGeneratorClientImpl implements LottoNumberGenerator {
     private final String generateServiceUrl;
     private final WinningNumberValidator winningNumberValidator;
 
-    public LottoNumberGeneratorClientImpl(RestTemplate rest, String generateServiceUrl, WinningNumberValidator winningNumberValidator) {
+    LottoNumberGeneratorClientImpl(RestTemplate rest, String generateServiceUrl, WinningNumberValidator winningNumberValidator) {
         this.rest = rest;
         this.generateServiceUrl = generateServiceUrl;
         this.winningNumberValidator = winningNumberValidator;
@@ -45,11 +44,11 @@ class LottoNumberGeneratorClientImpl implements LottoNumberGenerator {
                     ReceivedNumbersDto.class);
             return verifyResponse(response);
         } catch (HttpClientErrorException.NotFound notFoundException) {
-            return WinningNumberValidationResult.numbers_not_exist();
+            return LottoNumberGeneratorMessageProvider.numbers_not_exist();
         } catch (RestClientException | NullPointerException | NoSuchElementException exception) {
             processException(exception);
         }
-        return WinningNumberValidationResult.failed();
+        return LottoNumberGeneratorMessageProvider.failed();
     }
 
     private String createRequestParametersOfDate(LocalDate date) {
@@ -63,9 +62,9 @@ class LottoNumberGeneratorClientImpl implements LottoNumberGenerator {
 
     private WinningNumbersDto verifyResponse(ResponseEntity<ReceivedNumbersDto> response) {
         if (winningNumberValidator.isNumberValid(response.getBody().getWinningNumbers())) {
-            return WinningNumberValidationResult.valid(response.getBody().getWinningNumbers());
+            return LottoNumberGeneratorMessageProvider.valid(response.getBody().getWinningNumbers());
         }
-        return WinningNumberValidationResult.not_valid(response.getBody().getWinningNumbers());
+        return LottoNumberGeneratorMessageProvider.not_valid(response.getBody().getWinningNumbers());
     }
 
     private void processException(Exception exception) {

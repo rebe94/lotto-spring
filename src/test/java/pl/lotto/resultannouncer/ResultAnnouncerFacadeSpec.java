@@ -23,6 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.lose_message;
+import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.need_to_wait_message;
+import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.no_ticket_message;
+import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.win_message;
 
 @Tag("WithoutSpringTest")
 class ResultAnnouncerFacadeSpec {
@@ -58,7 +62,7 @@ class ResultAnnouncerFacadeSpec {
         given(resultCheckerFacade.getAllWinners()).willReturn(winnersDto);
         // when
         String result = resultAnnouncerFacade.checkResult(WIN_TICKET.getHash());
-        String win_message = ResultAnnouncerFacade.win_message();
+        String win_message = win_message();
 
         //then
         assertThat(result, equalTo(win_message));
@@ -71,7 +75,7 @@ class ResultAnnouncerFacadeSpec {
         given(resultCheckerFacade.getAllWinners()).willReturn(winnersDto);
         // when
         String result = resultAnnouncerFacade.checkResult(LOSE_TICKET.getHash());
-        String lose_message = ResultAnnouncerFacade.lose_message();
+        String lose_message = lose_message();
 
         //then
         assertThat(result, equalTo(lose_message));
@@ -83,7 +87,7 @@ class ResultAnnouncerFacadeSpec {
         given(numberReceiverFacade.findByHash(NOT_EXISTING_HASH_CODE)).willReturn(Optional.empty());
         // when
         String result = resultAnnouncerFacade.checkResult(NOT_EXISTING_HASH_CODE);
-        String no_ticket_message = ResultAnnouncerFacade.no_ticket_message();
+        String no_ticket_message = no_ticket_message();
 
         //then
         assertThat(result, equalTo(no_ticket_message));
@@ -97,7 +101,7 @@ class ResultAnnouncerFacadeSpec {
             given(numberReceiverFacade.findByHash(BEFORE_DRAW_TICKET.getHash())).willReturn(Optional.of(BEFORE_DRAW_TICKET));
             // when
             String result = resultAnnouncerFacade.checkResult(BEFORE_DRAW_TICKET.getHash());
-            String need_to_wait_message = ResultAnnouncerFacade.need_to_wait_message(BEFORE_DRAW_TICKET.getDrawDate());
+            String need_to_wait_message = need_to_wait_message(BEFORE_DRAW_TICKET.getDrawDate());
 
             //then
             assertThat(result, equalTo(need_to_wait_message));
@@ -112,7 +116,7 @@ class ResultAnnouncerFacadeSpec {
             given(numberReceiverFacade.findByHash(BEFORE_DRAW_TICKET.getHash())).willReturn(Optional.of(BEFORE_DRAW_TICKET));
             // when
             String result = resultAnnouncerFacade.checkResult(BEFORE_DRAW_TICKET.getHash());
-            String need_to_wait_message = ResultAnnouncerFacade.need_to_wait_message(BEFORE_DRAW_TICKET.getDrawDate());
+            String need_to_wait_message = need_to_wait_message(BEFORE_DRAW_TICKET.getDrawDate());
 
             //then
             assertThat(result, equalTo(need_to_wait_message));

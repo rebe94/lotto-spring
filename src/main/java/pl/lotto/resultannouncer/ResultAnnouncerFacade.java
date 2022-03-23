@@ -7,6 +7,11 @@ import pl.lotto.resultchecker.dto.WinnersDto;
 
 import java.time.LocalDate;
 
+import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.lose_message;
+import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.need_to_wait_message;
+import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.no_ticket_message;
+import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.win_message;
+
 public class ResultAnnouncerFacade {
 
     private final ResultCheckerFacade resultCheckerFacade;
@@ -33,21 +38,5 @@ public class ResultAnnouncerFacade {
 
     private boolean hasDrawTookPlaceAlready(String hash) {
         return numberReceiverFacade.findByHash(hash).get().getDrawDate().isBefore(GameConfiguration.nextDrawDate());
-    }
-
-    public static String win_message() {
-        return "You have won. Congratulations!";
-    }
-
-    public static String lose_message() {
-        return "Unfortunately, You have lost. Good luck in the next game!";
-    }
-
-    public static String no_ticket_message() {
-        return "Ticket associated with this hash code does not exist.";
-    }
-
-    public static String need_to_wait_message(LocalDate drawingDate) {
-        return "The draw for " + drawingDate + " was not take a place yet. Check Your ticket after " + GameConfiguration.ANNOUNCER_TIME;
     }
 }

@@ -1,19 +1,20 @@
 package pl.lotto.numberreceiver.controller;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.lotto.BaseIntegrationSpec;
-import pl.lotto.numberreceiver.NumberReceiverValidationResult;
+import pl.lotto.numberreceiver.NumberReceiverFacade;
+import pl.lotto.numberreceiver.NumberReceiverMessageProvider;
 import pl.lotto.numberreceiver.Ticket;
-import pl.lotto.numberreceiver.TicketRepository;
 import pl.lotto.numberreceiver.dto.ResultMessageDto;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -23,17 +24,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("SpringTest")
 @SpringBootTest
 @AutoConfigureMockMvc
-class NumberReceiverControllerSpec extends BaseIntegrationSpec {
+//@WebMvcTest(controllers = NumberReceiverController.class)
+class NumberReceiverControllerSpec {//extends BaseIntegrationSpec {
+
+    @MockBean
+    private NumberReceiverFacade numberReceiverFacade;
 
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private TicketRepository ticketRepository;
-
-    @AfterEach
-    void tearDown() {
-        ticketRepository.deleteAll();
-    }
+    private NumberReceiverController numberReceiverController;
 
     @Test
     public void returns_ok_status_when_makes_receiver_request() throws Exception {
@@ -44,10 +44,15 @@ class NumberReceiverControllerSpec extends BaseIntegrationSpec {
 
     @Test
     public void returns_accepted_message_when_sends_correct_numbers() throws Exception {
-        String input = "1 2 3 4 5 6";
-        Ticket ticket = Ticket.builder().build();
-        ResultMessageDto accepted = NumberReceiverValidationResult.accepted(ticket);
+        // given
+        final String input = "1 2 3 4 5 6";
+        final Set<Integer> numbers = numberReceiverController.parseToSetOfNumbers(input);
+        final Ticket ticket = Ticket.builder().build();
+        final ResultMessageDto accepted = NumberReceiverMessageProvider.accepted(ticket);
+        given(numberReceiverFacade.inputNumbers(numbers)).willReturn(accepted);
 
+        // when
+        // then
         mockMvc.perform(post("/receiver")
                         .param("input", input))
                 .andDo(print())
@@ -57,8 +62,10 @@ class NumberReceiverControllerSpec extends BaseIntegrationSpec {
 
     @Test
     public void returns_failed_message_when_sends_incorrect_numbers() throws Exception {
-        String input = "1 2 3 4 5 100";
-        ResultMessageDto failed = NumberReceiverValidationResult.failed();
+        final String input = "1 2 3 4 5 100";
+        final Set<Integer> numbers = numberReceiverController.parseToSetOfNumbers(input);
+        final ResultMessageDto failed = NumberReceiverMessageProvider.failed();
+        given(numberReceiverFacade.inputNumbers(numbers)).willReturn(failed);
 
         mockMvc.perform(post("/receiver")
                         .param("input", input))
@@ -69,13 +76,18 @@ class NumberReceiverControllerSpec extends BaseIntegrationSpec {
 
     @Test
     public void returns_failed_message_when_sends_wrong_input() throws Exception {
-        String input = "1, 2 3 4 5 6";
-        ResultMessageDto failed = NumberReceiverValidationResult.failed();
+        // given
+        final String input = "1, 2 3 4 5 6";
+        final Set<Integer> numbers = numberReceiverController.parseToSetOfNumbers(input);
+        final ResultMessageDto input_error = NumberReceiverMessageProvider.input_error();
+        given(numberReceiverFacade.inputNumbers(numbers)).willReturn(input_error);
 
+        // when
+        // then
         mockMvc.perform(post("/receiver")
                         .param("input", input))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString(failed.getMessage())));
+                .andExpect(content().string(containsString(input_error.getMessage())));
     }
 }

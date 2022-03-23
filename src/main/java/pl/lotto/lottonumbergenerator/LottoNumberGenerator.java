@@ -4,7 +4,7 @@ import pl.lotto.lottonumbergenerator.dto.WinningNumbersDto;
 
 import java.time.LocalDate;
 
-public interface LottoNumberGenerator {
+interface LottoNumberGenerator {
 
     WinningNumbersDto getWinningNumbersRequest(LocalDate date);
 }

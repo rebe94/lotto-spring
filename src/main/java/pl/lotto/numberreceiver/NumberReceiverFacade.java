@@ -12,8 +12,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
-import static pl.lotto.numberreceiver.NumberReceiverValidationResult.accepted;
-import static pl.lotto.numberreceiver.NumberReceiverValidationResult.failed;
+import static pl.lotto.numberreceiver.NumberReceiverMessageProvider.accepted;
+import static pl.lotto.numberreceiver.NumberReceiverMessageProvider.failed;
+import static pl.lotto.numberreceiver.NumberReceiverMessageProvider.input_error;
 
 public class NumberReceiverFacade {
 
@@ -26,6 +27,9 @@ public class NumberReceiverFacade {
     }
 
     public ResultMessageDto inputNumbers(Set<Integer> numbers) {
+        if (numbers.isEmpty()) {
+            return input_error();
+        }
         if (numberValidator.isNumberValid(numbers)) {
             String hash = UUID.randomUUID().toString();
             Ticket generatedTicket = Ticket.builder()

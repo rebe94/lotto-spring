@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.ui.Model;
 import pl.lotto.configuration.GameConfiguration;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
-import pl.lotto.numberreceiver.NumberReceiverValidationResult;
 import pl.lotto.numberreceiver.dto.ResultMessageDto;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -43,11 +43,8 @@ class NumberReceiverController {
             @RequestParam String input,
             Model page) {
         initialize(page);
-        ResultMessageDto resultMessageDto = NumberReceiverValidationResult.failed();
-        Set<Integer> setOfNumbers = validateInputFromUser(input);
-        if (!setOfNumbers.isEmpty()) {
-            resultMessageDto = numberReceiverFacade.inputNumbers(setOfNumbers);
-        }
+        Set<Integer> setOfNumbers = parseToSetOfNumbers(input);
+        ResultMessageDto resultMessageDto = numberReceiverFacade.inputNumbers(setOfNumbers);
         page.addAttribute("messageForUser", resultMessageDto.getMessage());
         page.addAttribute("generatedHash", resultMessageDto.getHash());
         page.addAttribute("drawDate", resultMessageDto.getDrawDate());
@@ -63,15 +60,16 @@ class NumberReceiverController {
         page.addAttribute("ticketReceiverClosingTime", TICKET_RECEIVER_CLOSING_TIME.toString());
     }
 
-    private Set<Integer> validateInputFromUser(String numbers) {
+    Set<Integer> parseToSetOfNumbers(String input) {
         Set<Integer> setOfNumbers = new TreeSet<>();
-        String[] splitted = numbers.trim().split(" ");
+        String[] splitted = input.trim().split(" ");
         try {
             for (String s : splitted) {
                 setOfNumbers.add(Integer.parseInt(s));
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return Collections.emptySet();
         }
         return setOfNumbers;
     }

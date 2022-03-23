@@ -11,25 +11,18 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.util.SocketUtils;
-import org.springframework.web.client.RestTemplate;
 import pl.lotto.configuration.GameConfiguration;
-import pl.lotto.lottonumbergenerator.LottoNumberGenerator;
 import pl.lotto.lottonumbergenerator.LottoNumberGeneratorConfiguration;
 import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
-import pl.lotto.numberreceiver.NumberReceiverValidationResult;
 import pl.lotto.numberreceiver.Ticket;
 import pl.lotto.numberreceiver.TicketRepository;
 import pl.lotto.numberreceiver.dto.ResultMessageDto;
 import pl.lotto.resultannouncer.ResultAnnouncerFacade;
 import pl.lotto.resultchecker.ResultCheckerFacade;
 import pl.lotto.resultchecker.WinnerRepository;
-
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -37,6 +30,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static pl.lotto.numberreceiver.NumberReceiverMessageProvider.accepted;
+import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.lose_message;
 
 @Tag("SpringTest")
 @SpringBootTest
@@ -59,7 +54,6 @@ class UserLosesIntegrationSpec extends BaseIntegrationSpec {
 
     private final LocalDate NEXT_DRAW_DATE = LocalDate.of(2000, 1, 1);
     private ResultMessageDto receivedUserMessage;
-    private String lose_message;
     private ResultMessageDto numbersAcceptedMessage;
     private String checkResultMessage;
 
@@ -100,19 +94,18 @@ class UserLosesIntegrationSpec extends BaseIntegrationSpec {
                     .numbers(userNumbers)
                     .drawDate(receivedUserMessage.getDrawDate())
                     .build();
-            numbersAcceptedMessage = NumberReceiverValidationResult.accepted(generatedTicket);
+            numbersAcceptedMessage = accepted(generatedTicket);
             // then
             assertThat(receivedUserMessage, equalTo(numbersAcceptedMessage));
 
             // given
             generatorDrawsWinningNumbersForDrawDay("1, 2, 3, 4, 5, 15");
             ticketsAreCheckingAndMarkingIfTheyWin(generatedTicket.getDrawDate());
-            lose_message = ResultAnnouncerFacade.lose_message();
             mocked.when(GameConfiguration::nextDrawDate).thenReturn(NEXT_DRAW_DATE.plusDays(1));
             // when
             checkResultMessage = userCheckResultByHash(generatedTicket.getHash());
             // then
-            assertThat(checkResultMessage, equalTo(lose_message));
+            assertThat(checkResultMessage, equalTo(lose_message()));
         }
     }
 
