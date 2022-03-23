@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.lotto.BaseIntegrationSpec;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -20,7 +19,7 @@ import static pl.lotto.configuration.GameConfiguration.LOWEST_NUMBER;
 @Tag("SpringTest")
 @SpringBootTest
 @AutoConfigureMockMvc
-class GenerateConfigurationControllerSpec extends BaseIntegrationSpec {
+class GenerateConfigurationControllerSpec {
 
     @Autowired
     private MockMvc mockMvc;

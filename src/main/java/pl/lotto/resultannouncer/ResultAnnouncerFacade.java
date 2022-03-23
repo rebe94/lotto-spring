@@ -5,8 +5,6 @@ import pl.lotto.numberreceiver.NumberReceiverFacade;
 import pl.lotto.resultchecker.ResultCheckerFacade;
 import pl.lotto.resultchecker.dto.WinnersDto;
 
-import java.time.LocalDate;
-
 import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.lose_message;
 import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.need_to_wait_message;
 import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.no_ticket_message;

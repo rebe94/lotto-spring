@@ -13,9 +13,6 @@ import pl.lotto.lottonumbergenerator.dto.WinningNumbersDto;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.time.LocalDate;

@@ -12,6 +12,11 @@ public class NumberReceiverConfiguration {
         return new NumberReceiverFacade(numberValidator, ticketRepository);
     }
 
+    @Bean
+    TicketDataLoader ticketDataLoader(TicketRepository ticketRepository) {
+        return new TicketDataLoader(ticketRepository);
+    }
+
     public NumberReceiverFacade numberReceiverFacadeForTests(){
         return numberReceiverFacade(new InMemoryTicketRepository());
     }

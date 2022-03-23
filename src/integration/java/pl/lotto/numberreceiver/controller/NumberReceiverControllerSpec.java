@@ -24,8 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Tag("SpringTest")
 @SpringBootTest
 @AutoConfigureMockMvc
-//@WebMvcTest(controllers = NumberReceiverController.class)
-class NumberReceiverControllerSpec {//extends BaseIntegrationSpec {
+class NumberReceiverControllerSpec {
 
     @MockBean
     private NumberReceiverFacade numberReceiverFacade;
@@ -43,7 +42,7 @@ class NumberReceiverControllerSpec {//extends BaseIntegrationSpec {
     }
 
     @Test
-    public void returns_accepted_message_when_sends_correct_numbers() throws Exception {
+    public void returns_accepted_message_when_gives_correct_numbers() throws Exception {
         // given
         final String input = "1 2 3 4 5 6";
         final Set<Integer> numbers = numberReceiverController.parseToSetOfNumbers(input);
@@ -61,7 +60,7 @@ class NumberReceiverControllerSpec {//extends BaseIntegrationSpec {
     }
 
     @Test
-    public void returns_failed_message_when_sends_incorrect_numbers() throws Exception {
+    public void returns_failed_message_when_gives_incorrect_numbers() throws Exception {
         final String input = "1 2 3 4 5 100";
         final Set<Integer> numbers = numberReceiverController.parseToSetOfNumbers(input);
         final ResultMessageDto failed = NumberReceiverMessageProvider.failed();
@@ -75,7 +74,7 @@ class NumberReceiverControllerSpec {//extends BaseIntegrationSpec {
     }
 
     @Test
-    public void returns_failed_message_when_sends_wrong_input() throws Exception {
+    public void returns_input_error_message_when_gives_wrong_input() throws Exception {
         // given
         final String input = "1, 2 3 4 5 6";
         final Set<Integer> numbers = numberReceiverController.parseToSetOfNumbers(input);

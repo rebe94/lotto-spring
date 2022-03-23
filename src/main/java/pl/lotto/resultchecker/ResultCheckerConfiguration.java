@@ -17,8 +17,13 @@ public class ResultCheckerConfiguration {
         return new ResultCheckerFacade(winnerRepository, numberReceiverFacade, lottoNumberGeneratorFacade);
     }
 
+    @Bean
+    WinnerDataLoader winnerDataLoader(WinnerRepository winnerRepository) {
+        return new WinnerDataLoader(winnerRepository);
+    }
+
     public ResultCheckerFacade resultCheckerFacadeForTests(NumberReceiverFacade numberReceiverFacade,
-                                                           LottoNumberGeneratorFacade lottoNumberGeneratorFacade){
+                                                           LottoNumberGeneratorFacade lottoNumberGeneratorFacade) {
         return resultCheckerFacade(new InMemoryWinnerRepository(), numberReceiverFacade, lottoNumberGeneratorFacade);
     }
 }

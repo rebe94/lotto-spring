@@ -67,7 +67,7 @@ class NumberReceiverController {
             for (String s : splitted) {
                 setOfNumbers.add(Integer.parseInt(s));
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             e.printStackTrace();
             return Collections.emptySet();
         }

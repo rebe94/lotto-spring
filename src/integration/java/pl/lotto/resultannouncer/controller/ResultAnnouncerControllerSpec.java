@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.lotto.BaseIntegrationSpec;
 import pl.lotto.resultannouncer.ResultAnnouncerFacade;
 import java.time.LocalDate;
 
@@ -25,7 +24,7 @@ import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.win_messag
 @Tag("SpringTest")
 @SpringBootTest
 @AutoConfigureMockMvc
-class ResultAnnouncerControllerSpec extends BaseIntegrationSpec {
+class ResultAnnouncerControllerSpec {
 
     @MockBean
     private ResultAnnouncerFacade resultAnnouncerFacade;
@@ -56,7 +55,7 @@ class ResultAnnouncerControllerSpec extends BaseIntegrationSpec {
 
 
     @Test
-    public void returns_lose_message_when_user_does_not_hit_winning_numbers_and_then_checks_if_has_win() throws Exception {
+    public void returns_lose_message_when_user_does_not_hit_winning_numbers() throws Exception {
         // given
         final String LOSE_HASH = "lose_hash";
         given(resultAnnouncerFacade.checkResult(LOSE_HASH)).willReturn(lose_message());
@@ -84,7 +83,7 @@ class ResultAnnouncerControllerSpec extends BaseIntegrationSpec {
     }
 
     @Test
-    public void areturns_no_ticket_message_when_user_checks_hash_code_which_does_not_exist() throws Exception {
+    public void returns_need_to_wait_message_when_user_checks_hash_code_before_draw() throws Exception {
         // given
         final String BEFORE_DRAW_HASH = "before_draw_hash";
         final LocalDate DRAW_DATE = LocalDate.of(2000, 1, 1);

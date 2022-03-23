@@ -31,6 +31,11 @@ class LottoNumberGeneratorClientImpl implements LottoNumberGenerator {
         this.winningNumberValidator = winningNumberValidator;
     }
 
+    @Getter
+    private static class ReceivedNumbersDto {
+        Set<Integer> winningNumbers;
+    }
+
     public WinningNumbersDto getWinningNumbersRequest(LocalDate date) {
         String requestParameters = createRequestParametersOfDate(date);
         String uri = generateServiceUrl + "/winningnumbers?" + requestParameters;
@@ -69,11 +74,6 @@ class LottoNumberGeneratorClientImpl implements LottoNumberGenerator {
 
     private void processException(Exception exception) {
         LOGGER.error("Http request execution failed.", exception);
-    }
-
-    @Getter
-    static class ReceivedNumbersDto {
-        Set<Integer> winningNumbers;
     }
 }
 
