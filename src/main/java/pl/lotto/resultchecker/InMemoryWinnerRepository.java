@@ -27,6 +27,13 @@ class InMemoryWinnerRepository implements WinnerRepository {
     }
 
     @Override
+    public Optional<Winner> findByHash(String hash) {
+        return winners.stream()
+                .filter(t -> t.getHash().equals(hash))
+                .findFirst();
+    }
+
+    @Override
     public <S extends Winner> List<S> insert(Iterable<S> entities) {
         return null;
     }

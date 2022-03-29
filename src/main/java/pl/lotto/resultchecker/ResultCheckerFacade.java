@@ -51,18 +51,18 @@ public class ResultCheckerFacade {
 
     @Scheduled(cron = "0 5 19 * * *")
     private void generateWinningNumbers() {
-        LocalDate drawingDate = LocalDate.now();
-        checkWinnersAfterDraw(drawingDate);
+        LocalDate drawDate = LocalDate.now();
+        checkWinnersAfterDraw(drawDate);
     }
 
-    public void checkWinnersAfterDraw(LocalDate drawingDate) {
-        WinningNumbersDto winningNumbersDto = lottoNumberGeneratorFacade.getWinningNumbers(drawingDate);
+    public void checkWinnersAfterDraw(LocalDate drawDate) {
+        WinningNumbersDto winningNumbersDto = lottoNumberGeneratorFacade.getWinningNumbers(drawDate);
         if (!winningNumbersDto.getValidationMessage().equals(WinningNumbersDto.ValidationMessage.VALID)) {
-            LOGGER.error("Couldn't check winners scheduled for " + drawingDate);
+            LOGGER.error("Couldn't check winners scheduled for " + drawDate);
             return;
         }
 
-        TicketsDto ticketsDto = numberReceiverFacade.getAllTicketsByDrawDate(drawingDate);
+        TicketsDto ticketsDto = numberReceiverFacade.getAllTicketsByDrawDate(drawDate);
         List<Winner> winners = ticketsDto.getList().stream()
                 .filter(ticketDto -> ticketDto.getNumbers().equals(winningNumbersDto.getWinningNumbers()))
                 .map(ticketDto -> Winner.builder()
@@ -72,6 +72,6 @@ public class ResultCheckerFacade {
                         .build())
                 .toList();
         winnerRepository.saveAll(winners);
-        LOGGER.info("Winners are correctly checked as scheduled for drawing date: " + drawingDate);
+        LOGGER.info("Winners are correctly checked as scheduled for drawing date: " + drawDate);
     }
 }

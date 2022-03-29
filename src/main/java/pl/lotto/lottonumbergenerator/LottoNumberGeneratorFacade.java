@@ -12,7 +12,7 @@ public class LottoNumberGeneratorFacade {
         this.lottoNumberGenerator = lottoNumberGenerator;
     }
 
-    public WinningNumbersDto getWinningNumbers(LocalDate drawingDate) {
-        return lottoNumberGenerator.getWinningNumbersRequest(drawingDate);
+    public WinningNumbersDto getWinningNumbers(LocalDate drawDate) {
+        return lottoNumberGenerator.getWinningNumbersRequest(drawDate);
     }
 }

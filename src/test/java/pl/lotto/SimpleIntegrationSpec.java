@@ -140,8 +140,8 @@ class SimpleIntegrationSpec {
                         .withHeader("Content-Type", "application/json")));
     }
 
-    private void ticketsAreCheckingAndMarkingIfTheyWin(LocalDate drawingDate) {
-        resultCheckerFacade.checkWinnersAfterDraw(drawingDate);
+    private void ticketsAreCheckingAndMarkingIfTheyWin(LocalDate drawDate) {
+        resultCheckerFacade.checkWinnersAfterDraw(drawDate);
     }
 
     private String userCheckResultByHash(String generatedHash) {

@@ -18,7 +18,7 @@ public class ResultAnnouncerMessageProvider {
         return "Ticket associated with this hash code does not exist.";
     }
 
-    public static String need_to_wait_message(LocalDate drawingDate) {
-        return "The draw for " + drawingDate + " was not take a place yet. Check Your ticket after " + GameConfiguration.ANNOUNCER_TIME;
+    public static String need_to_wait_message(LocalDate drawDate) {
+        return "The draw for " + drawDate + " was not take a place yet. Check Your ticket after " + GameConfiguration.ANNOUNCER_TIME;
     }
 }

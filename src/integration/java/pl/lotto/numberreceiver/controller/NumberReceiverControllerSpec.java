@@ -20,6 +20,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static pl.lotto.numberreceiver.NumberReceiverMessageProvider.accepted;
+import static pl.lotto.numberreceiver.NumberReceiverMessageProvider.failed;
+import static pl.lotto.numberreceiver.NumberReceiverMessageProvider.input_error;
 
 @Tag("SpringTest")
 @SpringBootTest
@@ -47,7 +50,7 @@ class NumberReceiverControllerSpec {
         final String input = "1 2 3 4 5 6";
         final Set<Integer> numbers = numberReceiverController.parseToSetOfNumbers(input);
         final Ticket ticket = Ticket.builder().build();
-        final ResultMessageDto accepted = NumberReceiverMessageProvider.accepted(ticket);
+        final ResultMessageDto accepted = accepted(ticket);
         given(numberReceiverFacade.inputNumbers(numbers)).willReturn(accepted);
 
         // when
@@ -63,7 +66,7 @@ class NumberReceiverControllerSpec {
     public void returns_failed_message_when_gives_incorrect_numbers() throws Exception {
         final String input = "1 2 3 4 5 100";
         final Set<Integer> numbers = numberReceiverController.parseToSetOfNumbers(input);
-        final ResultMessageDto failed = NumberReceiverMessageProvider.failed();
+        final ResultMessageDto failed = failed();
         given(numberReceiverFacade.inputNumbers(numbers)).willReturn(failed);
 
         mockMvc.perform(post("/receiver")
@@ -78,7 +81,7 @@ class NumberReceiverControllerSpec {
         // given
         final String input = "1, 2 3 4 5 6";
         final Set<Integer> numbers = numberReceiverController.parseToSetOfNumbers(input);
-        final ResultMessageDto input_error = NumberReceiverMessageProvider.input_error();
+        final ResultMessageDto input_error = input_error();
         given(numberReceiverFacade.inputNumbers(numbers)).willReturn(input_error);
 
         // when
