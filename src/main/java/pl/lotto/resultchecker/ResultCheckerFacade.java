@@ -49,8 +49,8 @@ public class ResultCheckerFacade {
                 .build();
     }
 
-    @Scheduled(cron = "0 5 19 * * *")
-    private void generateWinningNumbers() {
+    @Scheduled(cron = "0 5 19 * * *", zone = "Europe/Paris")
+    private void checkWinnersAfterDrawAsScheduled() {
         LocalDate drawDate = LocalDate.now();
         checkWinnersAfterDraw(drawDate);
     }

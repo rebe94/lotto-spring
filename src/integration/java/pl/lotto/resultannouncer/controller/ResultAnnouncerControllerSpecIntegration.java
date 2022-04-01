@@ -24,7 +24,7 @@ import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.win_messag
 @Tag("SpringTest")
 @SpringBootTest
 @AutoConfigureMockMvc
-class ResultAnnouncerControllerSpec {
+class ResultAnnouncerControllerSpecIntegration {
 
     @MockBean
     private ResultAnnouncerFacade resultAnnouncerFacade;

@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
-import pl.lotto.numberreceiver.NumberReceiverMessageProvider;
 import pl.lotto.numberreceiver.Ticket;
 import pl.lotto.numberreceiver.dto.ResultMessageDto;
 import java.util.Set;
@@ -27,7 +26,7 @@ import static pl.lotto.numberreceiver.NumberReceiverMessageProvider.input_error;
 @Tag("SpringTest")
 @SpringBootTest
 @AutoConfigureMockMvc
-class NumberReceiverControllerSpec {
+class NumberReceiverControllerSpecIntegration {
 
     @MockBean
     private NumberReceiverFacade numberReceiverFacade;

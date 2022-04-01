@@ -19,7 +19,7 @@ import static pl.lotto.configuration.GameConfiguration.LOWEST_NUMBER;
 @Tag("SpringTest")
 @SpringBootTest
 @AutoConfigureMockMvc
-class GenerateConfigurationControllerSpec {
+class GenerateConfigurationControllerSpecIntegration {
 
     @Autowired
     private MockMvc mockMvc;

@@ -7,7 +7,6 @@ import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
 
 @Configuration
-@EnableScheduling
 public class ResultCheckerConfiguration {
 
     @Bean

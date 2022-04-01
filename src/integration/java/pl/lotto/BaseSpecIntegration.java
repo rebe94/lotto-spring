@@ -9,5 +9,5 @@ import org.springframework.test.context.TestPropertySource;
         properties = "application.environment=integration"
 )
 @TestPropertySource(locations = "classpath:test.properties")
-abstract public class BaseIntegrationSpec {
+public class BaseSpecIntegration {
 }

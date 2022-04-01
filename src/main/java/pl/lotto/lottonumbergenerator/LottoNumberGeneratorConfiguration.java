@@ -11,8 +11,8 @@ import java.time.Duration;
 @Configuration
 public class LottoNumberGeneratorConfiguration {
 
-    @Value("${name.generator.service.url}")
-    String generateServiceUrl;
+    @Value("${generator.service.url}")
+    private String generateServiceUrl;
 
     private final RestTemplate restTemplate = new RestTemplateBuilder()
             .setConnectTimeout(Duration.ofMillis(1000))

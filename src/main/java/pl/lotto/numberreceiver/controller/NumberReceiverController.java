@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import static pl.lotto.configuration.GameConfiguration.AMOUNT_OF_NUMBERS;
+import static pl.lotto.configuration.GameConfiguration.ANNOUNCER_TIME;
 import static pl.lotto.configuration.GameConfiguration.DRAW_TIME;
 import static pl.lotto.configuration.GameConfiguration.HIGHEST_NUMBER;
 import static pl.lotto.configuration.GameConfiguration.LOWEST_NUMBER;
@@ -57,6 +58,7 @@ class NumberReceiverController {
         page.addAttribute("highestNumber", HIGHEST_NUMBER);
         page.addAttribute("dateTimeOfNextDraw", GameConfiguration.nextDrawDate().format(dateFormatter).toString());
         page.addAttribute("drawTime", DRAW_TIME.toString());
+        page.addAttribute("announcerTime", ANNOUNCER_TIME.toString());
         page.addAttribute("ticketReceiverClosingTime", TICKET_RECEIVER_CLOSING_TIME.toString());
     }
 

@@ -35,7 +35,7 @@ import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.lose_messa
 
 @Tag("SpringTest")
 @SpringBootTest
-class UserLosesIntegrationSpec extends BaseIntegrationSpec {
+class UserLosesSpecIntegration extends BaseSpecIntegration {
 
     private WireMockServer wireMockServer;
     @Autowired

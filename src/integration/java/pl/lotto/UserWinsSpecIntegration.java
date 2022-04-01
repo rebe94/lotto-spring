@@ -36,7 +36,7 @@ import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.win_messag
 
 @Tag("SpringTest")
 @SpringBootTest
-class UserWinsIntegrationSpec extends BaseIntegrationSpec {
+class UserWinsSpecIntegration extends BaseSpecIntegration {
 
     private WireMockServer wireMockServer;
     @Autowired

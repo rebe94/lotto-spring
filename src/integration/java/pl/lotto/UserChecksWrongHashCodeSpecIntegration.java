@@ -12,7 +12,7 @@ import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.no_ticket_
 
 @Tag("SpringTest")
 @SpringBootTest
-class UserChecksWrongHashCodeIntegrationSpec extends BaseIntegrationSpec {
+class UserChecksWrongHashCodeSpecIntegration extends BaseSpecIntegration {
 
     @Autowired
     private ResultAnnouncerFacade resultAnnouncerFacade;
