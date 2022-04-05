@@ -26,7 +26,6 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: rootuser
       MONGO_INITDB_ROOT_PASSWORD: rootpass
-
   database_manager:
     image: mongo-express
     container_name: mongo-express_lotto
