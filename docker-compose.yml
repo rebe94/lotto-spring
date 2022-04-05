@@ -1,0 +1,39 @@
+#-- WARNING --
+#-- Move this file to folder which contains folders of two projects: --
+#-- lotto-spring and lotto-generator --
+version: '3.8'
+services:
+  lotto-app:
+    container_name: lotto-app
+    build: ./lotto-spring
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+  generator-app:
+    container_name: generator-app
+    build: ./lotto-generator
+    ports:
+      - "9090:9090"
+    depends_on:
+      - database
+  database:
+    image: mongo
+    container_name: mongodb_lotto
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: rootuser
+      MONGO_INITDB_ROOT_PASSWORD: rootpass
+
+  database_manager:
+    image: mongo-express
+    container_name: mongo-express_lotto
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=rootuser
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=rootpass
+      - ME_CONFIG_MONGODB_SERVER=mongodb_lotto
