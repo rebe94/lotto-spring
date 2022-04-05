@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.lotto.resultannouncer.ResultAnnouncerFacade;
+
 import java.time.LocalDate;
 
 import static org.hamcrest.Matchers.containsString;
@@ -40,6 +41,35 @@ class ResultAnnouncerControllerSpecIntegration {
     }
 
     @Test
+    public void returns_no_ticket_message_when_user_checks_hash_code_which_does_not_exist() throws Exception {
+        // given
+        final String NOT_EXISTING_HASH = "not_existing_hash";
+        given(resultAnnouncerFacade.checkResult(NOT_EXISTING_HASH)).willReturn(no_ticket_message());
+        // when
+        // then
+        mockMvc.perform(get("/announcer")
+                        .param("hashCode", NOT_EXISTING_HASH))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(no_ticket_message())));
+    }
+
+    @Test
+    public void returns_need_to_wait_message_when_user_checks_hash_code_before_announce_time() throws Exception {
+        // given
+        final String BEFORE_ANNOUNCEMENT_HASH = "before_announcement_hash";
+        final LocalDate DRAW_DATE = LocalDate.of(2000, 1, 1);
+        given(resultAnnouncerFacade.checkResult(BEFORE_ANNOUNCEMENT_HASH)).willReturn(need_to_wait_message(DRAW_DATE));
+        // when
+        // then
+        mockMvc.perform(get("/announcer")
+                        .param("hashCode", BEFORE_ANNOUNCEMENT_HASH))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(need_to_wait_message(DRAW_DATE))));
+    }
+
+    @Test
     public void returns_win_message_when_user_hits_winning_numbers() throws Exception {
         // given
         final String WIN_HASH = "win_hash";
@@ -66,34 +96,5 @@ class ResultAnnouncerControllerSpecIntegration {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString(lose_message())));
-    }
-
-    @Test
-    public void returns_no_ticket_message_when_user_checks_hash_code_which_does_not_exist() throws Exception {
-        // given
-        final String NOT_EXISTING_HASH = "not_existing_hash";
-        given(resultAnnouncerFacade.checkResult(NOT_EXISTING_HASH)).willReturn(no_ticket_message());
-        // when
-        // then
-        mockMvc.perform(get("/announcer")
-                        .param("hashCode", NOT_EXISTING_HASH))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString(no_ticket_message())));
-    }
-
-    @Test
-    public void returns_need_to_wait_message_when_user_checks_hash_code_before_draw() throws Exception {
-        // given
-        final String BEFORE_DRAW_HASH = "before_draw_hash";
-        final LocalDate DRAW_DATE = LocalDate.of(2000, 1, 1);
-        given(resultAnnouncerFacade.checkResult(BEFORE_DRAW_HASH)).willReturn(need_to_wait_message(DRAW_DATE));
-        // when
-        // then
-        mockMvc.perform(get("/announcer")
-                        .param("hashCode", BEFORE_DRAW_HASH))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString(need_to_wait_message(DRAW_DATE))));
     }
 }

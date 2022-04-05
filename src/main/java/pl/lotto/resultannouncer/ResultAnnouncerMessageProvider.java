@@ -19,6 +19,6 @@ public class ResultAnnouncerMessageProvider {
     }
 
     public static String need_to_wait_message(LocalDate drawDate) {
-        return "The draw for " + drawDate + " was not take a place yet. Check Your ticket after " + GameConfiguration.ANNOUNCER_TIME;
+        return "Results of draw for " + drawDate + " will be available after " + GameConfiguration.ANNOUNCER_TIME + ". Check Your result later.";
     }
 }

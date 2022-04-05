@@ -6,7 +6,6 @@ import org.springframework.boot.ApplicationRunner;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -18,6 +17,7 @@ class WinnerDataLoader implements ApplicationRunner {
     @Autowired
     public WinnerDataLoader(WinnerRepository winnerRepository) {
         this.winnerRepository = winnerRepository;
+
     }
 
     public void run(ApplicationArguments args) {

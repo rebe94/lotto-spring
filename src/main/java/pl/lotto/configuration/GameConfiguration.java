@@ -19,9 +19,9 @@ public abstract class GameConfiguration {
     public static final LocalTime TICKET_RECEIVER_CLOSING_TIME = DRAW_TIME.minusMinutes(15);
 
     public static LocalDate nextDrawDate() {
-        if (LocalTime.now().isBefore(TICKET_RECEIVER_CLOSING_TIME)) {
-            return LocalDate.now();
+        if (TimeConfiguration.currentTime().isBefore(TICKET_RECEIVER_CLOSING_TIME)) {
+            return TimeConfiguration.currentDate();
         }
-        return LocalDate.now().plusDays(1);
+        return TimeConfiguration.currentDate().plusDays(1);
     }
 }

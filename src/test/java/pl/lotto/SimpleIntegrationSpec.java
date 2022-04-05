@@ -6,10 +6,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.springframework.util.SocketUtils;
-import pl.lotto.configuration.GameConfiguration;
+import pl.lotto.configuration.TimeConfiguration;
 import pl.lotto.lottonumbergenerator.LottoNumberGeneratorConfiguration;
 import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
 import pl.lotto.numberreceiver.NumberReceiverConfiguration;
@@ -20,7 +18,9 @@ import pl.lotto.resultannouncer.ResultAnnouncerConfiguration;
 import pl.lotto.resultannouncer.ResultAnnouncerFacade;
 import pl.lotto.resultchecker.ResultCheckerConfiguration;
 import pl.lotto.resultchecker.ResultCheckerFacade;
+
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Set;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
@@ -37,7 +37,10 @@ class SimpleIntegrationSpec {
 
     private final int port = SocketUtils.findAvailableTcpPort();
     private final String urlServiceForTest = "http://localhost:" + port + "/";
-    private final LocalDate NEXT_DRAW_DATE = LocalDate.of(2000, 1, 1);
+    private final LocalDate DRAW_DATE = LocalDate.of(2000, 1, 1);
+    private final LocalTime TIME_BEFORE_CLOSING_TIME = LocalTime.of(18, 30);
+    private final LocalTime TIME_AFTER_ANNOUNCEMENT = LocalTime.of(19, 15);
+
 
     private final LottoNumberGeneratorFacade lottoNumberGeneratorFacade = new LottoNumberGeneratorConfiguration()
             .lottoNumberGeneratorFacadeForTests(urlServiceForTest);
@@ -66,58 +69,54 @@ class SimpleIntegrationSpec {
 
     @Test
     public void user_chooses_correct_numbers_and_receives_acceptance_and_hash_code_then_checks_result_and_receives_win_information() {
-        try (MockedStatic<GameConfiguration> mocked = Mockito.mockStatic(GameConfiguration.class)) {
-            // given
-            mocked.when(GameConfiguration::nextDrawDate).thenReturn(NEXT_DRAW_DATE);
-            Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6);
-            // when
-            receivedUserMessage = userChoosesNumbers(userNumbers);
-            Ticket generatedTicket = Ticket.builder()
-                    .hash(receivedUserMessage.getHash())
-                    .numbers(userNumbers)
-                    .drawDate(receivedUserMessage.getDrawDate())
-                    .build();
-            numbersAcceptedMessage = accepted(generatedTicket);
-            // then
-            assertThat(receivedUserMessage, equalTo(numbersAcceptedMessage));
+        // given
+        TimeConfiguration.useMockTime(DRAW_DATE.atTime(TIME_BEFORE_CLOSING_TIME), TimeConfiguration.getRealTimeZone().toZoneId());
+        Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6);
+        // when
+        receivedUserMessage = userChoosesNumbers(userNumbers);
+        Ticket generatedTicket = Ticket.builder()
+                .hash(receivedUserMessage.getHash())
+                .numbers(userNumbers)
+                .drawDate(receivedUserMessage.getDrawDate())
+                .build();
+        numbersAcceptedMessage = accepted(generatedTicket);
+        // then
+        assertThat(receivedUserMessage, equalTo(numbersAcceptedMessage));
 
-            // given
-            generatorDrawsWinningNumbersForDrawDay("1, 2, 3, 4, 5, 6");
-            ticketsAreCheckingAndMarkingIfTheyWin(generatedTicket.getDrawDate());
-            mocked.when(GameConfiguration::nextDrawDate).thenReturn(NEXT_DRAW_DATE.plusDays(1));
-            // when
-            checkResultMessage = userCheckResultByHash(generatedTicket.getHash());
-            // then
-            assertThat(checkResultMessage, equalTo(win_message()));
-        }
+        // given
+        generatorDrawsWinningNumbersForDrawDay("1, 2, 3, 4, 5, 6");
+        ticketsAreCheckingAndMarkingIfTheyWin(generatedTicket.getDrawDate());
+        TimeConfiguration.useMockTime(DRAW_DATE.atTime(TIME_AFTER_ANNOUNCEMENT), TimeConfiguration.getRealTimeZone().toZoneId());
+        // when
+        checkResultMessage = userCheckResultByHash(generatedTicket.getHash());
+        // then
+        assertThat(checkResultMessage, equalTo(win_message()));
     }
 
     @Test
     public void user_chooses_correct_numbers_and_receives_acceptance_and_hash_code_then_checks_result_and_receives_lose_information() {
-        try (MockedStatic<GameConfiguration> mocked = Mockito.mockStatic(GameConfiguration.class)) {
-            // given
-            mocked.when(GameConfiguration::nextDrawDate).thenReturn(NEXT_DRAW_DATE);
-            Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6);
-            // when
-            receivedUserMessage = userChoosesNumbers(userNumbers);
-            Ticket generatedTicket = Ticket.builder()
-                    .hash(receivedUserMessage.getHash())
-                    .numbers(userNumbers)
-                    .drawDate(receivedUserMessage.getDrawDate())
-                    .build();
-            numbersAcceptedMessage = accepted(generatedTicket);
-            // then
-            assertThat(receivedUserMessage, equalTo(numbersAcceptedMessage));
+        // given
+        TimeConfiguration.useMockTime(DRAW_DATE.atTime(TIME_BEFORE_CLOSING_TIME), TimeConfiguration.getRealTimeZone().toZoneId());
+        Set<Integer> userNumbers = Set.of(1, 2, 3, 4, 5, 6);
+        // when
+        receivedUserMessage = userChoosesNumbers(userNumbers);
+        Ticket generatedTicket = Ticket.builder()
+                .hash(receivedUserMessage.getHash())
+                .numbers(userNumbers)
+                .drawDate(receivedUserMessage.getDrawDate())
+                .build();
+        numbersAcceptedMessage = accepted(generatedTicket);
+        // then
+        assertThat(receivedUserMessage, equalTo(numbersAcceptedMessage));
 
-            // given
-            generatorDrawsWinningNumbersForDrawDay("1, 2, 3, 4, 5, 15");
-            ticketsAreCheckingAndMarkingIfTheyWin(generatedTicket.getDrawDate());
-            mocked.when(GameConfiguration::nextDrawDate).thenReturn(NEXT_DRAW_DATE.plusDays(1));
-            // when
-            checkResultMessage = userCheckResultByHash(generatedTicket.getHash());
-            // then
-            assertThat(checkResultMessage, equalTo(lose_message()));
-        }
+        // given
+        generatorDrawsWinningNumbersForDrawDay("1, 2, 3, 4, 5, 15");
+        ticketsAreCheckingAndMarkingIfTheyWin(generatedTicket.getDrawDate());
+        TimeConfiguration.useMockTime(DRAW_DATE.atTime(TIME_AFTER_ANNOUNCEMENT), TimeConfiguration.getRealTimeZone().toZoneId());
+        // when
+        checkResultMessage = userCheckResultByHash(generatedTicket.getHash());
+        // then
+        assertThat(checkResultMessage, equalTo(lose_message()));
     }
 
     @Test

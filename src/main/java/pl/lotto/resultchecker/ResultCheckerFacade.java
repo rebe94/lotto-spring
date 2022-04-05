@@ -1,16 +1,17 @@
 package pl.lotto.resultchecker;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
+import pl.lotto.configuration.TimeConfiguration;
 import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
 import pl.lotto.lottonumbergenerator.dto.WinningNumbersDto;
 import pl.lotto.numberreceiver.NumberReceiverFacade;
 import pl.lotto.numberreceiver.dto.TicketsDto;
 import pl.lotto.resultchecker.dto.WinnerDto;
 import pl.lotto.resultchecker.dto.WinnersDto;
+
+import java.time.LocalDate;
+import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -49,9 +50,9 @@ public class ResultCheckerFacade {
                 .build();
     }
 
-    @Scheduled(cron = "0 5 19 * * *", zone = "Europe/Paris")
+    @Scheduled(cron = "0 5 19 * * *", zone = "Europe/Warsaw")
     private void checkWinnersAfterDrawAsScheduled() {
-        LocalDate drawDate = LocalDate.now();
+        LocalDate drawDate = TimeConfiguration.currentDate();
         checkWinnersAfterDraw(drawDate);
     }
 
