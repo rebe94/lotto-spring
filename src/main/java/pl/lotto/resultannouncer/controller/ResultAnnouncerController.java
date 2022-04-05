@@ -11,6 +11,8 @@ import pl.lotto.numberreceiver.NumberReceiverFacade;
 import pl.lotto.numberreceiver.Ticket;
 import pl.lotto.resultannouncer.ResultAnnouncerFacade;
 
+import java.util.TreeSet;
+
 import static pl.lotto.lottonumbergenerator.dto.WinningNumbersDto.ValidationMessage.VALID;
 import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.lose_message;
 import static pl.lotto.resultannouncer.ResultAnnouncerMessageProvider.win_message;
@@ -63,7 +65,7 @@ class ResultAnnouncerController {
             return "announcer.html";
         }
 
-        winningNumbers = winningNumbersDto.getWinningNumbers().toString();
+        winningNumbers = new TreeSet<>(winningNumbersDto.getWinningNumbers()).toString();
         loadValues(page);
         return "announcer.html";
     }
