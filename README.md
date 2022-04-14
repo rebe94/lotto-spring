@@ -14,7 +14,7 @@ Check it out, generator service's source code on Github: <a href="https://github
 
 [Lotto Game](https://lotto-game-app.herokuapp.com) project was created in order to help me develop skills to become `Java Backend Developer`.
 
-​	Two applications collaborates to manage ticket receiving and number generating. The applications are built on `modular architecture` with one entrypoint for every module which is `Facade design pattern`.
+​	Two applications collaborate to manage ticket receiving and number generating. The applications are built on `modular architecture` with one entrypoint for every module which is `Facade design pattern`.
 
 # Tech stack
 
