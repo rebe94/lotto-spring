@@ -1,7 +1,11 @@
 package pl.lotto.resultchecker;
 
-import org.slf4j.Logger;
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.scheduling.annotation.Scheduled;
+
+import lombok.extern.slf4j.Slf4j;
 import pl.lotto.configuration.TimeConfiguration;
 import pl.lotto.lottonumbergenerator.LottoNumberGeneratorFacade;
 import pl.lotto.lottonumbergenerator.dto.WinningNumbersDto;
@@ -10,14 +14,9 @@ import pl.lotto.numberreceiver.dto.TicketsDto;
 import pl.lotto.resultchecker.dto.WinnerDto;
 import pl.lotto.resultchecker.dto.WinnersDto;
 
-import java.time.LocalDate;
-import java.util.List;
 
-import static org.slf4j.LoggerFactory.getLogger;
-
+@Slf4j
 public class ResultCheckerFacade {
-
-    private static final Logger LOGGER = getLogger(ResultCheckerFacade.class.getName());
 
     private final WinnerRepository winnerRepository;
     private final NumberReceiverFacade numberReceiverFacade;
@@ -59,7 +58,7 @@ public class ResultCheckerFacade {
     public void checkWinnersAfterDraw(LocalDate drawDate) {
         WinningNumbersDto winningNumbersDto = lottoNumberGeneratorFacade.getWinningNumbers(drawDate);
         if (!winningNumbersDto.getValidationMessage().equals(WinningNumbersDto.ValidationMessage.VALID)) {
-            LOGGER.error("Couldn't check winners scheduled for " + drawDate);
+            log.error("Couldn't check winners scheduled for " + drawDate);
             return;
         }
 
@@ -73,6 +72,6 @@ public class ResultCheckerFacade {
                         .build())
                 .toList();
         winnerRepository.saveAll(winners);
-        LOGGER.info("Winners are correctly checked as scheduled for drawing date: " + drawDate);
+        log.info("Winners are correctly checked as scheduled for drawing date: " + drawDate);
     }
 }

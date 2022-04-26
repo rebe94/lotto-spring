@@ -8,6 +8,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
 
+import pl.lotto.infrastructure.lottonumbergenerator.client.LottoNumberGeneratorClientImpl;
+
 @Configuration
 public class LottoNumberGeneratorConfiguration {
 
