@@ -1,4 +1,4 @@
-package pl.lotto.lottonumbergenerator;
+package pl.lotto.infrastructure.lottonumbergenerator.client;
 
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -8,6 +8,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import pl.lotto.lottonumbergenerator.LottoNumberGenerator;
+import pl.lotto.lottonumbergenerator.WinningNumberValidator;
 import pl.lotto.lottonumbergenerator.dto.WinningNumbersDto;
 
 import java.time.LocalDate;
@@ -38,7 +41,7 @@ class LottoNumberGeneratorClientImpl implements LottoNumberGenerator {
         Set<Integer> winningNumbers;
     }
 
-    public WinningNumbersDto getWinningNumbersRequest(LocalDate date) {
+    public WinningNumbersDto getWinningNumbers(LocalDate date) {
         String requestParameters = createRequestParametersOfDate(date);
         String uri = generateServiceUrl + "/winningnumbers?" + requestParameters;
         HttpEntity<HttpHeaders> httpEntity = new HttpEntity<>(new HttpHeaders());

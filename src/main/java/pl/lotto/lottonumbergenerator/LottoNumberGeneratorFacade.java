@@ -13,6 +13,6 @@ public class LottoNumberGeneratorFacade {
     }
 
     public WinningNumbersDto getWinningNumbers(LocalDate drawDate) {
-        return lottoNumberGenerator.getWinningNumbersRequest(drawDate);
+        return lottoNumberGenerator.getWinningNumbers(drawDate);
     }
 }
